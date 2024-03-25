@@ -2,7 +2,7 @@
 
 Welcome to the NEHS Student Management System repository!
 
-This system is designed to streamline student management tasks at New Era High School. It's built using PHP OOP and MySQLi, providing features for managing student information, attendance, grades, and more.
+This system is designed to streamline student management tasks at Nueva Ecija High School. It's built using PHP OOP and MySQLi, providing features for managing student information, attendance, grades, and more.
 
 ## Features
 - **User Authentication**: Secure login system with role-based access control.
