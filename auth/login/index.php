@@ -1,9 +1,7 @@
-<?php include '../../layouts/session.php'; ?>
-<?php include '../../layouts/main.php'; ?>
+<!DOCTYPE html>
 
 <head>
     <title>NEHS | Student Management Portal</title>
-    <?php include '../../layouts/title-meta.php'; ?>
 
     <?php include '../../layouts/head-css.php'; ?>
 </head>
@@ -22,20 +20,17 @@
                         <span><img src="../../assets/images/nehs.png" alt="dark logo" height="80"></span>
                     </a>
                     <h1 class="text-center">NEHS Student Management Portal</h1>
-                </div>
-
-                <div class="my-auto">
                     <div class="text-center">
-                        <h4 class="text-uppercase">Teacher Portal</h4>
                         <p class="text-muted">Sign in to continue to NEHS Student Management Portal.</p>
                     </div>
-
+                </div>
+                <div class="mb-auto">
                     <!-- form -->
                     <form action="#">
                         <div class="mb-3">
-                            <label for="emailaddress" class="form-label">Username</label>
-                            <input class="form-control" type="textbox" id="emailaddress" required=""
-                                placeholder="Enter your email">
+                            <label for="username" class="form-label">Username</label>
+                            <input class="form-control" type="textbox" id="username" required=""
+                                placeholder="Enter your username">
                         </div>
                         <div class="mb-3">
                             <a href="auth-recoverpw-2.php" class="text-muted float-end"><small>Forgot your
