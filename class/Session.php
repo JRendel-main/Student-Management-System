@@ -13,7 +13,7 @@ class Session
 
     public static function get($key)
     {
-        if (isset ($_SESSION[$key])) {
+        if (isset($_SESSION[$key])) {
             return $_SESSION[$key];
         } else {
             return false;
@@ -40,6 +40,10 @@ class Session
     public static function destroy()
     {
         session_destroy();
-        header("Location: index.php");
+    }
+
+    public static function unset($key)
+    {
+        unset($_SESSION[$key]);
     }
 }

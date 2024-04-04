@@ -33,4 +33,11 @@ class User
             ];
         }
     }
+
+    public function getAdminInfo($username)
+    {
+        $sql = "SELECT * FROM user WHERE username = '$username' LIMIT 1";
+        $result = $this->db->query($sql);
+        return $result->fetch_assoc();
+    }
 }
