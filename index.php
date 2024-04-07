@@ -1,12 +1,14 @@
 <?php
 include 'controllers/autoloader.php';
-if (isset ($_SESSION['login'])) {
-    header('Location: index.php');
-}
+$session = new Session();
+$session->init();
 
-if (isset ($_GET['error'])) {
-    $error = $_GET['error'];
-    echo "<script>alert('$error')</script>";
+$role = $session->get('role');
+
+if ($role == 'admin') {
+    header('Location: admin/index.php');
+} else if ($role == 'teacher') {
+    header('Location: teacher/index.php');
 }
 ?>
 

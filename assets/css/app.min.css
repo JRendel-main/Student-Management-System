@@ -37,12 +37,12 @@ html[data-menu-color=dark] {
 }
 
 html[data-menu-color=brand] {
-    --ct-menu-bg: linear-gradient(135deg, #6379c3 0%, #3e60d5 60%);
+    --ct-menu-bg: linear-gradient(135deg, #2e8b57 0%, #008000 60%);
     --ct-menu-item-color: #cedce4;
     --ct-menu-item-hover-color: #ffffff;
     --ct-menu-item-active-color: #ffffff;
     --ct-menu-condensed-link-bg: #313a46;
-    --ct-help-box-bg: rgba(255, 255, 255, 0.07)
+    --ct-help-box-bg: rgba(255, 255, 255, 0.07);
 }
 
 html[data-bs-theme=dark][data-menu-color=dark],
@@ -74,12 +74,12 @@ html[data-topbar-color=dark] {
 }
 
 html[data-topbar-color=brand] {
-    --ct-topbar-bg: linear-gradient(135deg, #6379c3 0%, #3e60d5 60%);
+    --ct-topbar-bg: linear-gradient(135deg, #2e8b57 0%, #008000 60%);
     --ct-topbar-item-color: rgba(255, 255, 255, 0.7);
     --ct-topbar-item-hover-color: #ffffff;
     --ct-topbar-search-bg: rgba(255, 255, 255, 0.1);
     --ct-topbar-user-bg: rgba(255, 255, 255, 0.1);
-    --ct-topbar-user-border: rgba(255, 255, 255, 0.15)
+    --ct-topbar-user-border: rgba(255, 255, 255, 0.15);
 }
 
 html[data-bs-theme=dark][data-topbar-color=dark],
