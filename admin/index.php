@@ -12,7 +12,7 @@ if ($_SESSION['role'] != 'admin') {
 ?>
 
 <head>
-    <title>NEHS HS | Admin Portal</title>
+    <title>Teacher Dashboard | Admin Portal</title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <?php include 'layouts/head-css.php'; ?>

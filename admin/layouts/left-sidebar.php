@@ -60,7 +60,7 @@
                 <div class="collapse" id="sidebarTeacher">
                     <ul class="side-nav-second-level">
                         <li>
-                            <a href="teacher.php">Teacher List</a>
+                            <a href="teacher-lists.php">Teacher List</a>
                         </li>
                         <li>
                             <a href="add-teacher.php">Add Teacher</a>
