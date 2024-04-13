@@ -16,6 +16,9 @@ $teacherTitle = $_POST['teacherTitle'];
 $teacherEmail = $_POST['teacherEmail'];
 $teacherContactNum = $_POST['teacherContactNum'];
 
+// get the text before @ on email
+$teacherUsername = explode('@', $teacherEmail)[0];
+
 $formData = [
     'teacherFirstName' => $teacherFirstName,
     'teacherMiddleName' => $teacherMiddleName,
@@ -24,7 +27,8 @@ $formData = [
     'teacherDob' => $teacherDob,
     'teacherTitle' => $teacherTitle,
     'teacherEmail' => $teacherEmail,
-    'teacherContactNum' => $teacherContactNum
+    'teacherContactNum' => $teacherContactNum,
+    'teacherUsername' => $teacherUsername
 ];
 
 $response = $user->addTeacher($formData);

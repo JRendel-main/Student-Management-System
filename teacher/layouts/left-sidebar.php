@@ -51,26 +51,6 @@
 
             <!-- user with second level -->
             <li class="side-nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarTeacher" aria-expanded="false"
-                    class="side-nav-link side-sub-nav">
-                    <i class="ri-user-2-line"></i>
-                    <span> Teacher </span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="sidebarTeacher">
-                    <ul class="side-nav-second-level">
-                        <li>
-                            <a href="teacher-lists.php">Teacher List</a>
-                        </li>
-                        <li>
-                            <a href="add-teacher.php">Add Teacher</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <!-- user with second level -->
-            <li class="side-nav-item">
                 <a data-bs-toggle="collapse" href="#sidebarStudent" aria-expanded="false"
                     class="side-nav-link side-sub-nav">
                     <i class="ri-user-3-line"></i>
@@ -80,48 +60,13 @@
                 <div class="collapse" id="sidebarStudent">
                     <ul class="side-nav-second-level">
                         <li>
-                            <a href="student.php">Student List</a>
+                            <a href="student-list.php">Student List</a>
                         </li>
                         <li>
-                            <a href="add-student.php">Add Student</a>
+                            <a href="student-attendance.php">Student Attendance</a>
                         </li>
                     </ul>
                 </div>
-            </li>
-
-            <li class="side-nav-title">Academic Settings</li>
-
-            <li class="side-nav-item">
-                <a href="school-year.php" class="side-nav-link">
-                    <i class="ri-calendar-check-line"></i>
-                    <span> School Year </span>
-                </a>
-            </li>
-
-            <!-- Section -->
-            <li class="side-nav-item">
-                <a href="section.php" class="side-nav-link">
-                    <i class="
-                    ri-group-line
-                    "></i>
-                    <span> Section </span>
-                </a>
-            </li>
-
-            <!-- Strand -->
-            <li class="side-nav-item">
-                <a href="strand.php" class="side-nav-link">
-                    <i class="ri-group-line"></i>
-                    <span> Strand </span>
-                </a>
-            </li>
-
-            <!-- Subjects -->
-            <li class="side-nav-item">
-                <a href="subjects.php" class="side-nav-link">
-                    <i class="ri-book-2-line"></i>
-                    <span> Subjects </span>
-                </a>
             </li>
 
             <li class="side-nav-title">Attendance</li>

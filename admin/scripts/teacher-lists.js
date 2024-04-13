@@ -24,6 +24,10 @@ $(document).ready(function () {
                 data: 'name'
             },
             {
+                title: 'Teacher Title',
+                data: 'title'
+            },
+            {
                 title: 'Email Address',
                 data: 'email'
             },

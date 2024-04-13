@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo '<script>alert("Login successful")</script>';
         } else {
             $session->set('login', true);
-            $session->set('email', $result['email']);
+            $session->set('email', $result['user']['email']);
             $session->set('role', 'teacher');
             echo '<script>alert("Login successful")</script>';
             header('Location: ../teacher/index.php');

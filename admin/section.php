@@ -46,18 +46,18 @@ if ($_SESSION['role'] != 'admin') {
                             <div class="page-title-box">
                                 <div class="page-title-right">
                                     <button class="btn btn-success waves-effect waves-light" data-bs-toggle="modal"
-                                        data-bs-target="#addTeacherModal">
+                                        data-bs-target="#addSectionModal">
                                         <i class="bi bi-plus"></i>
-                                        Add Manually</button>
+                                        Add Section</button>
                                 </div>
-                                <h4 class="page-title">Teacher Lists</h4>
+                                <h4 class="page-title">Section Lists</h4>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="card">
                             <div class="card-body">
-                                <table id="teacher-lists" class="table table-striped dt-responsive nowrap w-100">
+                                <table id="section" class="table table-striped dt-responsive nowrap w-100">
                                     <thead></thead>
                                     <tbody></tbody>
                                 </table>
@@ -71,70 +71,61 @@ if ($_SESSION['role'] != 'admin') {
             <?php include 'layouts/footer.php'; ?>
 
         </div>
-        <!-- Modal for adding teacher manually -->
-        <div class="modal fade" id="addTeacherModal" tabindex="-1" aria-labelledby="addTeacherModalLabel"
+
+        <!-- Add section modal -->
+        <div class="modal fade" id="addSectionModal" tabindex="-1" aria-labelledby="addSectionModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header bg-success">
-                        <h5 class="modal-title text-white" id="addTeacherModalLabel">Add Teacher Manually</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addTeacherForm">
+                    <form id="addSectionForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addSectionModalLabel">Add Section</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
                             <div class="mb-3">
-                                <label for="teacherFirstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control input-sm" id="teacherFirstName"
-                                    name="teacherFirstName" required>
+                                <label for="sectionName" class="col-form-label">Section Name:</label>
+                                <input type="text" class="form-control" id="sectionName" name="sectionName" required>
                             </div>
                             <div class="mb-3">
-                                <label for="teacherMiddleName" class="form-label">Middle Name</label>
-                                <input type="text" class="form-control" id="teacherMiddleName" name="teacherMiddleName">
-                            </div>
-                            <div class="mb-3">
-                                <label for="teacherLastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="teacherLastName" name="teacherLastName"
-                                    required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="teacherGender" class="form-label">Gender</label>
-                                <select class="form-select" id="teacherGender" name="teacherGender" required>
-                                    <option value="">Select gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="others">Others</option>
+                                <label for="gradeLevel" class="col-form-label">Grade Level:</label>
+                                <select class="form-select" id="gradeLevel" name="gradeLevel" required>
+                                    <option value="">Select Grade Level</option>
+                                    <option value="7">Grade 7</option>
+                                    <option value="8">Grade 8</option>
+                                    <option value="9">Grade 9</option>
+                                    <option value="10">Grade 10</option>
+                                    <option value="11">Grade 11</option>
+                                    <option value="12">Grade 12</option>
                                 </select>
                             </div>
-                            <!-- date of birth -->
                             <div class="mb-3">
-                                <label for="teacherDob" class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control" id="teacherDob" name="teacherDob" required>
+                                <label for="advisorId" class="col-form-label">Advisor:</label>
+                                <select class="form-select" id="advisorId" name="advisorId" required>
+                                    <option value="">Select Advisor</option>
+                                    <?php
+                                    $teacher = new Teacher($conn);
+                                    $teachers = $teacher->getAllTeachers();
+                                    foreach ($teachers as $teacher) {
+                                        echo '<option value="' . $teacher['teacher_id'] . '">' . $teacher['first_name'] . ' ' . $teacher['last_name'] . ' - ' . $teacher['title'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
                             </div>
-                            <!-- Title -->
-                            <div class="mb-3">
-                                <label for="teacherTitle" class="form-label">Current Title</label>
-                                <input type="text" class="form-control" id="teacherTitle" name="teacherTitle" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="teacherEmail" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="teacherEmail" name="teacherEmail" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="teacherContactNum" class="form-label">Contact Number</label>
-                                <input type="text" class="form-control" id="teacherContactNum" name="teacherContactNum"
-                                    required>
-                            </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary waves-effect"
-                            data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success waves-effect waves-light"
-                            id="addTeacherManuallyBtn">Add Teacher</button>
-                    </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary waves-effect"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light">Save</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
+        <!-- end modal for adding teacher manually -->
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
         <!-- end modal for adding teacher manually -->
 
         <!-- ============================================================== -->
@@ -163,7 +154,7 @@ if ($_SESSION['role'] != 'admin') {
 
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
-    <script src="scripts/teacher-lists.js"></script>
+    <script src="scripts/section.js"></script>
 
 </body>
 

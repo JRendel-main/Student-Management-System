@@ -8,6 +8,13 @@ class User
         $this->db = $db;
     }
 
+    public function getId($email)
+    {
+        $sql = "SELECT user_id FROM user WHERE email = '$email'";
+        $result = $this->db->query($sql);
+        return $result->fetch_assoc()['user_id'];
+    }
+
     public function login($username, $password)
     {
         // Prepare SQL statement
@@ -52,17 +59,21 @@ class User
         $contactNum = $data['teacherContactNum'];
         $title = $data['teacherTitle'];
         $email = $data['teacherEmail'];
+        $username = $data['teacherUsername'];
         $password = $this->generateTeacherPassword();
         $category = 'teacher';
 
+        // profile
+        $teacherProfile = 'https://ui-avatars.com/api/?name=' . $firstName . '+' . $lastName . '&size=256';
+
         // insert to user email password
-        $sql = "INSERT INTO user (email, password_hash, category) VALUES ('$email', '$password', '$category')";
+        $sql = "INSERT INTO user (username, email, password_hash, category) VALUES ('$username','$email', '$password', '$category')";
         $this->db->query($sql);
         $userId = $this->db->insert_id;
 
         // insert to teacher table
-        $sql = "INSERT INTO teacher (user_id, first_name, middle_name, last_name, DOB, gender, contact_num, title) 
-                VALUES ('$userId', '$firstName', '$middleName', '$lastName', '$dob', '$gender', '$contactNum', '$title')";
+        $sql = "INSERT INTO teacher (user_id, first_name, middle_name, last_name, DOB, gender, contact_num, title, profile_picture_url) 
+                VALUES ('$userId', '$firstName', '$middleName', '$lastName', '$dob', '$gender', '$contactNum', '$title', '$teacherProfile')";
         $this->db->query($sql);
 
         if ($this->db->affected_rows > 0) {

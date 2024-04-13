@@ -40,9 +40,9 @@ if ($role == 'admin') {
                     <!-- form -->
                     <form action="controllers/loginUser.php" method="post">
                         <div class="mb-3">
-                            <label for="emailaddress" class="form-label">Username</label>
+                            <label for="emailaddress" class="form-label">Username / Email Address</label>
                             <input class="form-control" type="textbox" id="emailaddress" required="" name='username'
-                                placeholder="Enter your username">
+                                placeholder="Enter your username / email">
                         </div>
                         <div class="mb-3">
                             <a href="auth-recoverpw-2.php" class="text-muted float-end"><small>Forgot your
