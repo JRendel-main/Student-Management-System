@@ -74,56 +74,64 @@ if ($_SESSION['role'] != 'admin') {
         <!-- Modal for adding teacher manually -->
         <div class="modal fade" id="addTeacherModal" tabindex="-1" aria-labelledby="addTeacherModalLabel"
             aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-success">
                         <h5 class="modal-title text-white" id="addTeacherModalLabel">Add Teacher Manually</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="addTeacherForm">
-                            <div class="mb-3">
-                                <label for="teacherFirstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control input-sm" id="teacherFirstName"
-                                    name="teacherFirstName" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <form id="addTeacherForm">
+                                    <div class="mb-3">
+                                        <label for="teacherFirstName" class="form-label">First Name</label>
+                                        <input type="text" class="form-control" id="teacherFirstName"
+                                            name="teacherFirstName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="teacherMiddleName" class="form-label">Middle Name</label>
+                                        <input type="text" class="form-control" id="teacherMiddleName"
+                                            name="teacherMiddleName">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="teacherLastName" class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" id="teacherLastName"
+                                            name="teacherLastName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="teacherGender" class="form-label">Gender</label>
+                                        <select class="form-select" id="teacherGender" name="teacherGender" required>
+                                            <option value="">Select gender</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="others">Others</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="teacherDob" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="teacherDob" name="teacherDob"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="teacherTitle" class="form-label">Current Title</label>
+                                        <input type="text" class="form-control" id="teacherTitle" name="teacherTitle"
+                                            required>
+                                    </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="teacherMiddleName" class="form-label">Middle Name</label>
-                                <input type="text" class="form-control" id="teacherMiddleName" name="teacherMiddleName">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="teacherEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="teacherEmail" name="teacherEmail"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="teacherContactNum" class="form-label">Contact Number</label>
+                                    <input type="text" class="form-control" id="teacherContactNum"
+                                        name="teacherContactNum" required>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="teacherLastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="teacherLastName" name="teacherLastName"
-                                    required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="teacherGender" class="form-label">Gender</label>
-                                <select class="form-select" id="teacherGender" name="teacherGender" required>
-                                    <option value="">Select gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="others">Others</option>
-                                </select>
-                            </div>
-                            <!-- date of birth -->
-                            <div class="mb-3">
-                                <label for="teacherDob" class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control" id="teacherDob" name="teacherDob" required>
-                            </div>
-                            <!-- Title -->
-                            <div class="mb-3">
-                                <label for="teacherTitle" class="form-label">Current Title</label>
-                                <input type="text" class="form-control" id="teacherTitle" name="teacherTitle" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="teacherEmail" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="teacherEmail" name="teacherEmail" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="teacherContactNum" class="form-label">Contact Number</label>
-                                <input type="text" class="form-control" id="teacherContactNum" name="teacherContactNum"
-                                    required>
-                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary waves-effect"
@@ -135,6 +143,86 @@ if ($_SESSION['role'] != 'admin') {
                 </div>
             </div>
         </div>
+
+        <!-- Modal for editing teacher -->
+        <div class="modal fade" id="editTeacherModal" tabindex="-1" aria-labelledby="editTeacherModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="editTeacherModalLabel">Edit Teacher Information</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editTeacherForm">
+                            <input type="hidden" id="teacher_id" name="teacher_id">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="editTeacherFirstName" class="form-label">First Name</label>
+                                        <input type="text" class="form-control" id="editTeacherFirstName"
+                                            name="first_name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editTeacherMiddleName" class="form-label">Middle Name</label>
+                                        <input type="text" class="form-control" id="editTeacherMiddleName"
+                                            name="middle_name">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editTeacherLastName" class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" id="editTeacherLastName"
+                                            name="last_name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editTeacherGender" class="form-label">Gender</label>
+                                        <select class="form-select" id="editTeacherGender" name="gender" required>
+                                            <option value="">Select gender</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="others">Others</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editTeacherDob" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="editTeacherDob" name="dob" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editTeacherTitle" class="form-label">Current Title</label>
+                                        <input type="text" class="form-control" id="editTeacherTitle" name="title"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="editTeacherEmail" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="editTeacherEmail" name="email"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editTeacherContactNum" class="form-label">Contact Number</label>
+                                        <input type="text" class="form-control" id="editTeacherContactNum"
+                                            name="contact_num" required>
+                                    </div>
+                                    <!-- Advisory Section -->
+                                    <div class="mb-3">
+                                        <label for="editTeacherAdvisory" class="form-label">Advisory Section</label>
+                                        <select class="form-select" id="editTeacherAdvisory" name="editTeacherAdvisory">
+                                            <!-- Populate options dynamically using JavaScript or PHP -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
         <!-- end modal for adding teacher manually -->
 
         <!-- ============================================================== -->

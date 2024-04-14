@@ -34,6 +34,11 @@ $formData = [
 $response = $user->addTeacher($formData);
 
 if ($response['success']) {
+    $userId = $response['user_id'];
+    $credentials = $user->getCredentials($userId);
+
+    $email = new Email();
+    $email->sendTeacherCredentials($teacherEmail, $teacherUsername, $credentials['password']);
     echo json_encode([
         'success' => true,
         'message' => 'Teacher added successfully'

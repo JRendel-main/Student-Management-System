@@ -18,6 +18,8 @@ if ($_SESSION['role'] != 'teacher') {
     <?php include 'layouts/head-css.php'; ?>
     <link href="../assets/vendor/fullcalendar/main.min.css" rel="stylesheet" type="text/css" />
 </head>
+<?php
+?>
 
 <body>
     <!-- Begin page -->
@@ -50,24 +52,26 @@ if ($_SESSION['role'] != 'teacher') {
                                         <img src="https://ui-avatars.com/api/?name=John+Doe" style="height: 100px;"
                                             alt="avatar-2" class="rounded-circle img-thumbnail" id="profile">
                                     </span>
-                                    <div class="">
+                                    <div class="float-start">
                                         <h4 class="mt-1 mb-1" id="teacher-name"><?php echo $username ?></h4>
                                         <p class="fs-13" id="teacher-title"> <?php echo $category ?></p>
+                                        <div class="mt-4">
+                                            <h4 class="header-title">
+                                                <?php
+                                                $teacher = new Academic($conn);
 
-                                        <ul class="mb-0 list-inline">
-                                            <li class="list-inline-item me-3">
-                                                <h5 class="mb-1">10 Students</h5>
-                                                <p class="mb-0 fs-13">Student Count</p>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <h5 class="mb-1">12 Subjects</h5>
-                                                <p class="mb-0 fs-13">Subject Count</p>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <button class="btn btn-primary btn-sm mt-3" id="edit-profile">Edit
-                                                    Profile</button>
-                                            </li>
-                                        </ul>
+                                                $teacherId = $teacher->getTeacherId($userId);
+                                                $academic = new Academic($conn);
+                                                $section = $academic->getSection($teacherId);
+                                                echo $section['section_name'];
+                                                ?>
+                                            </h4>
+                                            <!-- Count of students -->
+                                            <p class="text-muted">Total Students:
+                                                <?php echo $academic->getTotalStudents($teacherId); ?>
+                                            </p>
+                                            <!-- <p class="text-muted">No advisory class yet.</p> -->
+                                        </div>
                                     </div>
                                     <!-- end div-->
                                 </div>
@@ -106,8 +110,20 @@ if ($_SESSION['role'] != 'teacher') {
 
     <!-- App js -->
     <script src="../assets/js/app.min.js"></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.11/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../assets/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+    <script src="../assets/vendor/datatables.net-fixedcolumns-bs5/js/fixedColumns.bootstrap5.min.js"></script>
+    <script src="../assets/vendor/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="../assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../assets/vendor/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+    <script src="../assets/vendor/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../assets/vendor/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../assets/vendor/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
     <script src="scripts/index.js"></script>
 
 </body>

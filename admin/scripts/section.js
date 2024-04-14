@@ -12,12 +12,20 @@ $(document).ready(() => {
                         data: 'section_id'
                     },
                     {
+                        title: 'Adviser',
+                        data: 'advisor_name'
+                    },
+                    {
                         title: 'Section Name',
                         data: 'section_name'
                     },
                     {
                         title: 'Year Level',
                         data: 'year'
+                    },
+                    {
+                        title: 'Strand',
+                        data: 'strand_name'
                     },
                     {
                         title: 'Action',
@@ -28,8 +36,6 @@ $(document).ready(() => {
                         }
                     }
                 ],
-                dom: 'Bfrtip',
-                buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
             });
         },
         error: (error) => {

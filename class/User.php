@@ -79,7 +79,8 @@ class User
         if ($this->db->affected_rows > 0) {
             return [
                 'success' => true,
-                'message' => 'Teacher added successfully'
+                'message' => 'Teacher added successfully',
+                'user_id' => $userId
             ];
         } else {
             return [
@@ -87,6 +88,22 @@ class User
                 'message' => 'Failed to add teacher'
             ];
         }
+    }
+
+    public function getCredentials($user_id)
+    {
+        $sql = "SELECT * FROM user WHERE user_id = '$user_id'";
+        $result = $this->db->query($sql);
+
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $data['username'] = $row['username'];
+            $data['password'] = $row['password_hash'];
+        }
+
+        return $data;
     }
 
     private function generateTeacherPassword()

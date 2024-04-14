@@ -40,6 +40,19 @@ class Teacher
         return $data;
     }
 
+    public function getTeacher($id)
+    {
+        $sql = "SELECT a.*, b.* FROM teacher a, user b WHERE teacher_id = $id AND a.user_id = b.user_id";
+        $query = $this->conn->query($sql);
+
+        $data = [];
+        while ($row = $query->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
     public function fetchTeachers($requestData)
     {
         $columns = array(
@@ -105,6 +118,24 @@ class Teacher
         }
 
         return true;
+    }
+
+    public function updateTeacher($id, $first_name, $middle_name, $last_name, $gender, $dob, $title, $email, $contact_num)
+    {
+        $query = 'UPDATE teacher SET first_name = ?, middle_name = ?, last_name = ?, gender = ?, DOB = ?, title = ?, contact_num = ? WHERE teacher_id = ?';
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bind_param('sssssssi', $first_name, $middle_name, $last_name, $gender, $dob, $title, $contact_num, $id);
+        $stmt->execute();
+
+        $query = 'UPDATE user SET email = ? WHERE user_id = (SELECT user_id FROM teacher WHERE teacher_id = ?)';
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bind_param('si', $email, $id);
+        $stmt->execute();
+
+        return true;
+
     }
 }
 

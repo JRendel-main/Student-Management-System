@@ -126,6 +126,7 @@
             $user = new Teacher($conn);
             $teacher = $user->getTeacherInfo($userId);
 
+            $teacher_id = $teacher['teacher_id'];
             $username = $teacher['first_name'] . ' ' . $teacher['last_name'];
             $category = $teacher['title'];
 

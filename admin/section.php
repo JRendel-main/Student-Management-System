@@ -91,10 +91,6 @@ if ($_SESSION['role'] != 'admin') {
                                 <label for="gradeLevel" class="col-form-label">Grade Level:</label>
                                 <select class="form-select" id="gradeLevel" name="gradeLevel" required>
                                     <option value="">Select Grade Level</option>
-                                    <option value="7">Grade 7</option>
-                                    <option value="8">Grade 8</option>
-                                    <option value="9">Grade 9</option>
-                                    <option value="10">Grade 10</option>
                                     <option value="11">Grade 11</option>
                                     <option value="12">Grade 12</option>
                                 </select>
@@ -108,6 +104,19 @@ if ($_SESSION['role'] != 'admin') {
                                     $teachers = $teacher->getAllTeachers();
                                     foreach ($teachers as $teacher) {
                                         echo '<option value="' . $teacher['teacher_id'] . '">' . $teacher['first_name'] . ' ' . $teacher['last_name'] . ' - ' . $teacher['title'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="strandId" class="col-form-label">Strand:</label>
+                                <select class="form-select" id="strandId" name="strandId" required>
+                                    <option value="">Select Strand</option>
+                                    <?php
+                                    $strand = new Academic($conn);
+                                    $strands = $strand->getAllStrand();
+                                    foreach ($strands as $strand) {
+                                        echo '<option value="' . $strand['strand_id'] . '">' . $strand['strand_name'] . '</option>';
                                     }
                                     ?>
                                 </select>

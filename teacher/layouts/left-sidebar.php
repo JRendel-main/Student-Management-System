@@ -60,6 +60,9 @@
                 <div class="collapse" id="sidebarStudent">
                     <ul class="side-nav-second-level">
                         <li>
+                            <a href="add-student.php">Add Student</a>
+                        </li>
+                        <li>
                             <a href="student-list.php">Student List</a>
                         </li>
                         <li>
