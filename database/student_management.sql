@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 27, 2024 at 01:44 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- Generation Time: Apr 14, 2024 at 07:20 PM
+-- Server version: 10.4.27-MariaDB
+-- PHP Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,8 +29,16 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `academic_year` (
   `academic_year_id` int(11) NOT NULL,
-  `year` int(11) DEFAULT NULL
+  `year` varchar(15) DEFAULT NULL,
+  `status` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `academic_year`
+--
+
+INSERT INTO `academic_year` (`academic_year_id`, `year`, `status`) VALUES
+(1, '2023-2024', 'current');
 
 -- --------------------------------------------------------
 
@@ -83,8 +91,19 @@ CREATE TABLE `guardian` (
 
 CREATE TABLE `section` (
   `section_id` int(11) NOT NULL,
-  `section_name` varchar(255) DEFAULT NULL
+  `section_name` varchar(255) DEFAULT NULL,
+  `year` varchar(10) NOT NULL,
+  `advisor_id` int(11) NOT NULL,
+  `strand_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `section`
+--
+
+INSERT INTO `section` (`section_id`, `section_name`, `year`, `advisor_id`, `strand_id`) VALUES
+(7, 'Newton', '12', 11, 3),
+(8, 'Bonifacio', '11', 9, 3);
 
 -- --------------------------------------------------------
 
@@ -108,6 +127,17 @@ CREATE TABLE `strand` (
   `strand_name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `strand`
+--
+
+INSERT INTO `strand` (`strand_id`, `strand_name`) VALUES
+(1, 'STEM'),
+(2, 'ABM'),
+(3, 'TVL - ICT'),
+(4, 'HUMSS'),
+(5, 'GAS');
+
 -- --------------------------------------------------------
 
 --
@@ -117,6 +147,7 @@ CREATE TABLE `strand` (
 CREATE TABLE `student` (
   `student_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
+  `section_id` int(11) NOT NULL,
   `first_name` varchar(255) DEFAULT NULL,
   `middle_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
@@ -131,6 +162,14 @@ CREATE TABLE `student` (
   `profile_picture_url` varchar(255) DEFAULT NULL,
   `remarks` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `student`
+--
+
+INSERT INTO `student` (`student_id`, `user_id`, `section_id`, `first_name`, `middle_name`, `last_name`, `email`, `DOB`, `barangay`, `city`, `province`, `nationality`, `religion`, `gender`, `profile_picture_url`, `remarks`) VALUES
+(2, NULL, 7, 'Rommel', 'Bautista', 'Maningas', 'johnrendel87@gmail.com', '2024-04-02', '', 'Cabanatuan City', 'Nueva Ecija', 'Filipino', 'Catholic', 'Male', NULL, 'test'),
+(3, NULL, 7, 'Rommel', 'Dizon', 'Maningas', 'johnrendel87@gmail.com', '2024-04-01', 'San Josef Norte', 'Cabanatuan City', 'Nueva Ecija', 'Filipino', 'Catholic', 'Male', NULL, 'test');
 
 -- --------------------------------------------------------
 
@@ -167,10 +206,21 @@ CREATE TABLE `teacher` (
   `middle_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
   `DOB` date DEFAULT NULL,
+  `gender` enum('male','female','others') NOT NULL,
   `subject_taught` varchar(255) DEFAULT NULL,
-  `title` enum('Mr.','Mrs.','Dr.') DEFAULT NULL,
+  `contact_num` varchar(255) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
   `profile_picture_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `teacher`
+--
+
+INSERT INTO `teacher` (`teacher_id`, `user_id`, `first_name`, `middle_name`, `last_name`, `DOB`, `gender`, `subject_taught`, `contact_num`, `title`, `profile_picture_url`) VALUES
+(9, 10, 'Rommel', 'Dizon', 'Maningas', '2024-04-01', 'female', NULL, '123132131', 'Teacher II', 'https://ui-avatars.com/api/?name=Rommel+Maningas&size=256'),
+(10, 11, 'Rendel', 'San Luis', 'Maningas', '2024-04-02', 'male', NULL, '123131', 'Teacher II', 'https://ui-avatars.com/api/?name=Rendel+Maningas&size=256'),
+(11, 12, 'Ryan', 'San Luis', 'Maningas', '2024-04-07', 'others', NULL, '123131', 'Teacher II', 'https://ui-avatars.com/api/?name=Ryan+Maningas&size=256');
 
 -- --------------------------------------------------------
 
@@ -191,7 +241,11 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `username`, `password_hash`, `email`, `category`) VALUES
-(1, 'admin', '123', 'nexuslinkofficial@gmail.com', 'admin');
+(1, 'admin', '123', 'nexuslinkofficial@gmail.com', 'admin'),
+(9, 'johnrendel87', '2024-89914', 'johnrendel87@gmail.com', 'teacher'),
+(10, 'mrskybrine', '2024-72679', 'mrskybrine@gmail.com', 'teacher'),
+(11, 'rendel', '2024-81960', 'rendel@gmail.com', 'teacher'),
+(12, 'ryan', '2024-47144', 'ryan@gmail.com', 'teacher');
 
 --
 -- Indexes for dumped tables
@@ -248,7 +302,8 @@ ALTER TABLE `strand`
 -- Indexes for table `student`
 --
 ALTER TABLE `student`
-  ADD PRIMARY KEY (`student_id`);
+  ADD PRIMARY KEY (`student_id`),
+  ADD KEY `student_ibfk_1` (`user_id`);
 
 --
 -- Indexes for table `student_subject`
@@ -284,7 +339,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `academic_year`
 --
 ALTER TABLE `academic_year`
-  MODIFY `academic_year_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `academic_year_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `attendance`
@@ -308,7 +363,7 @@ ALTER TABLE `guardian`
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `semester`
@@ -320,13 +375,13 @@ ALTER TABLE `semester`
 -- AUTO_INCREMENT for table `strand`
 --
 ALTER TABLE `strand`
-  MODIFY `strand_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `strand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `subject`
@@ -338,13 +393,13 @@ ALTER TABLE `subject`
 -- AUTO_INCREMENT for table `teacher`
 --
 ALTER TABLE `teacher`
-  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables
