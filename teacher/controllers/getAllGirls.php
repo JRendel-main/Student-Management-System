@@ -12,11 +12,11 @@ $section = $academic->getSection($teacher_id);
 
 $section_id = $section['section_id'];
 $boys = new Student($conn);
-$boysList = $boys->getAllBoys($section_id);
+$girlsLists = $boys->getAllGirls($section_id);
 
 $data = [];
 
-foreach ($boysList as $boy) {
+foreach ($girlsLists as $boy) {
     $data[] = [
         'student_id' => $boy['student_id'],
         'name' => $boy['last_name'] . ', ' . $boy['first_name'] . ' ' . $boy['middle_name'],

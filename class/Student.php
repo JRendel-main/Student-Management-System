@@ -55,4 +55,25 @@ class Student
             return false;
         }
     }
+
+    public function getAllGirls($section_id)
+    {
+        $query = "SELECT * FROM student WHERE section_id = ? AND gender = 'Female'";
+        $stmt = $this->conn->prepare($query);
+
+        if ($stmt) {
+            $stmt->bind_param("i", $section_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data = [];
+
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+
+            return $data;
+        } else {
+            return false;
+        }
+    }
 }

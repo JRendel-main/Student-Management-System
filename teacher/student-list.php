@@ -111,40 +111,8 @@ if ($_SESSION['role'] != 'teacher') {
     <script src="../assets/vendor/datatables.net-buttons/js/buttons.print.min.js"></script>
     <script src="../assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
     <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
-    <script>
-    $(document).ready(() => {
-        $.ajax({
-            url: 'controllers/getAllBoys.php',
-            type: 'POST',
-            data: {
-                teacher_id: $('#teacher_id').val()
-            },
-            success: function(response) {
-                var data = JSON.parse(response);
-                var table = $('#boys').DataTable({
-                    responsive: true,
-                    data: data,
-                    columns: [{
-                            title: 'Student ID',
-                            data: 'student_id'
-                        },
-                        {
-                            title: 'Name',
-                            data: 'name'
-                        },
-                        {
-                            title: 'Action',
-                            data: 'student_id',
-                            render: function(data) {
-                                return `<a href="student-profile.php?id=${data}" class="btn btn-primary btn-sm">View</a>`;
-                            }
-                        }
-                    ]
-                });
-            }
-        })
-    })
-    </script>
+    <script src="scripts/student-lists.js"></script>
+
 
 </body>
 
