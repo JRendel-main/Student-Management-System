@@ -115,4 +115,19 @@ class Academic
         $students = $results->fetch_assoc();
         return $students['total_students'];
     }
+
+    public function getAllSemester()
+    {
+        $query = "SELECT * FROM semester";
+        $result = $this->conn->query($query);
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
 }

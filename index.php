@@ -10,6 +10,12 @@ if ($role == 'admin') {
 } else if ($role == 'teacher') {
     header('Location: teacher/index.php');
 }
+
+// check if there is error in get, if there is alert the message
+if (isset($_GET['error'])) {
+    $error = $_GET['error'];
+    echo "<script>alert('$error')</script>";
+}
 ?>
 
 <head>

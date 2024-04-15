@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2024 at 07:20 PM
+-- Generation Time: Apr 15, 2024 at 06:36 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -103,7 +103,8 @@ CREATE TABLE `section` (
 
 INSERT INTO `section` (`section_id`, `section_name`, `year`, `advisor_id`, `strand_id`) VALUES
 (7, 'Newton', '12', 11, 3),
-(8, 'Bonifacio', '11', 9, 3);
+(8, 'Bonifacio', '11', 9, 3),
+(9, 'Thomson', '12', 10, 4);
 
 -- --------------------------------------------------------
 
@@ -115,6 +116,14 @@ CREATE TABLE `semester` (
   `semester_id` int(11) NOT NULL,
   `semester_name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `semester`
+--
+
+INSERT INTO `semester` (`semester_id`, `semester_name`) VALUES
+(1, 'First Semester'),
+(2, 'Second Semester');
 
 -- --------------------------------------------------------
 
@@ -136,7 +145,8 @@ INSERT INTO `strand` (`strand_id`, `strand_name`) VALUES
 (2, 'ABM'),
 (3, 'TVL - ICT'),
 (4, 'HUMSS'),
-(5, 'GAS');
+(5, 'GAS'),
+(6, 'TVL - HUMSS');
 
 -- --------------------------------------------------------
 
@@ -168,7 +178,7 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`student_id`, `user_id`, `section_id`, `first_name`, `middle_name`, `last_name`, `email`, `DOB`, `barangay`, `city`, `province`, `nationality`, `religion`, `gender`, `profile_picture_url`, `remarks`) VALUES
-(2, NULL, 7, 'Rommel', 'Bautista', 'Maningas', 'johnrendel87@gmail.com', '2024-04-02', '', 'Cabanatuan City', 'Nueva Ecija', 'Filipino', 'Catholic', 'Male', NULL, 'test'),
+(2, NULL, 7, 'Rommel', 'Bautista', 'Maningas', 'johnrendel87@gmail.com', '2024-04-02', '', 'Cabanatuan City', 'Nueva Ecija', 'Filipino', 'Catholic', 'Female', NULL, 'test'),
 (3, NULL, 7, 'Rommel', 'Dizon', 'Maningas', 'johnrendel87@gmail.com', '2024-04-01', 'San Josef Norte', 'Cabanatuan City', 'Nueva Ecija', 'Filipino', 'Catholic', 'Male', NULL, 'test');
 
 -- --------------------------------------------------------
@@ -190,8 +200,27 @@ CREATE TABLE `student_subject` (
 
 CREATE TABLE `subject` (
   `subject_id` int(11) NOT NULL,
-  `subject_name` varchar(255) DEFAULT NULL
+  `academic_year_id` int(11) NOT NULL,
+  `strand_id` int(11) NOT NULL,
+  `semester_id` int(11) NOT NULL,
+  `subject_name` varchar(255) DEFAULT NULL,
+  `subject_code` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `subject`
+--
+
+INSERT INTO `subject` (`subject_id`, `academic_year_id`, `strand_id`, `semester_id`, `subject_name`, `subject_code`) VALUES
+(2, 1, 3, 1, 'Oral Communication in Context', 'ENGS01G'),
+(3, 1, 3, 1, 'Entrepreneurship', 'ENTS01B'),
+(4, 1, 3, 1, 'Komunikasyon at Pananaliksik sa Wika at Kulturang Pilipino', 'FILS01G'),
+(5, 1, 3, 1, 'Literature from the Philippines and the World', 'LITS21G'),
+(6, 1, 3, 1, 'General Mathematics', 'MATS01G'),
+(7, 1, 3, 1, 'Earth and Life Science', 'NSCS01G'),
+(8, 1, 3, 1, 'Animation 1', 'AMNS01Cl'),
+(9, 1, 3, 1, 'Computer Programming 1', 'COPS01Cl'),
+(10, 1, 3, 1, 'Physical Education and Health 1', 'PEFS01G');
 
 -- --------------------------------------------------------
 
@@ -220,7 +249,8 @@ CREATE TABLE `teacher` (
 INSERT INTO `teacher` (`teacher_id`, `user_id`, `first_name`, `middle_name`, `last_name`, `DOB`, `gender`, `subject_taught`, `contact_num`, `title`, `profile_picture_url`) VALUES
 (9, 10, 'Rommel', 'Dizon', 'Maningas', '2024-04-01', 'female', NULL, '123132131', 'Teacher II', 'https://ui-avatars.com/api/?name=Rommel+Maningas&size=256'),
 (10, 11, 'Rendel', 'San Luis', 'Maningas', '2024-04-02', 'male', NULL, '123131', 'Teacher II', 'https://ui-avatars.com/api/?name=Rendel+Maningas&size=256'),
-(11, 12, 'Ryan', 'San Luis', 'Maningas', '2024-04-07', 'others', NULL, '123131', 'Teacher II', 'https://ui-avatars.com/api/?name=Ryan+Maningas&size=256');
+(11, 12, 'Ryan', 'San Luis', 'Maningas', '2024-04-07', 'others', NULL, '123131', 'Teacher II', 'https://ui-avatars.com/api/?name=Ryan+Maningas&size=256'),
+(12, 13, 'Teacher', 'Test', 'Test', '2024-04-02', 'male', NULL, '123123123123', 'Teacher IV', 'https://ui-avatars.com/api/?name=Teacher+Test&size=256');
 
 -- --------------------------------------------------------
 
@@ -245,7 +275,8 @@ INSERT INTO `user` (`user_id`, `username`, `password_hash`, `email`, `category`)
 (9, 'johnrendel87', '2024-89914', 'johnrendel87@gmail.com', 'teacher'),
 (10, 'mrskybrine', '2024-72679', 'mrskybrine@gmail.com', 'teacher'),
 (11, 'rendel', '2024-81960', 'rendel@gmail.com', 'teacher'),
-(12, 'ryan', '2024-47144', 'ryan@gmail.com', 'teacher');
+(12, 'ryan', '2024-47144', 'ryan@gmail.com', 'teacher'),
+(13, 'teacher', '2024-99991', 'teacher@gmail.com', 'teacher');
 
 --
 -- Indexes for dumped tables
@@ -363,19 +394,19 @@ ALTER TABLE `guardian`
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `semester`
 --
 ALTER TABLE `semester`
-  MODIFY `semester_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `semester_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `strand`
 --
 ALTER TABLE `strand`
-  MODIFY `strand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `strand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `student`
@@ -387,19 +418,19 @@ ALTER TABLE `student`
 -- AUTO_INCREMENT for table `subject`
 --
 ALTER TABLE `subject`
-  MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `teacher`
 --
 ALTER TABLE `teacher`
-  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables
