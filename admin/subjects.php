@@ -128,6 +128,24 @@ if ($_SESSION['role'] != 'admin') {
                             ?>
                         </div>
                         <div class="mb-3">
+                            <label for="subjectTeacher" class="col-form-label">Subject Teacher:</label>
+                            <?php
+                            $teacher = new Teacher($conn);
+                            $teacherList = $teacher->getAllTeachers();
+
+                            if (count($teacherList) > 0) {
+                                echo '<select class="form-select" id="subjectTeacher" name="subjectTeacher" required>';
+                                echo '<option value="">Select Subject Teacher</option>';
+                                foreach ($teacherList as $row) {
+                                    echo '<option value="' . $row['teacher_id'] . '">' . $row['last_name'] . ', ' . $row['first_name'] . '</option>';
+                                }
+                                echo '</select>';
+                            } else {
+                                echo '<p class="text-danger">No teacher found. Please add teacher first.</p>';
+                            }
+                            ?>
+                        </div>
+                        <div class="mb-3">
                             <label for="subjectName" class="col-form-label">Subject Name:</label>
                             <input type="text" class="form-control" id="subjectName" name="subjectName" required>
                         </div>

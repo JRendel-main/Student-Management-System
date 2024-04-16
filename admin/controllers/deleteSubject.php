@@ -11,7 +11,7 @@ $subject = new Subject($conn);
 $result = $subject->deleteSubject($subjectId);
 
 if ($result) {
-    echo json_encode(['status' => 'success', 'message' => 'Subject deleted successfully']);
+    echo json_encode(['success' => true, 'message' => 'Subject deleted successfully']);
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Failed to delete subject']);
+    echo json_encode(['success' => false, 'message' => 'Failed to delete subject']);
 }
