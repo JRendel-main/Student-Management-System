@@ -12,7 +12,7 @@ $(document).ready(() => {
             data: formData,
             success: (response) => {
                 response = JSON.parse(response);
-                if (response.success) {
+                if (response.status) {
                     swal.fire({
                         title: 'Subject Added',
                         icon: 'success',
@@ -147,7 +147,7 @@ $(document).ready(() => {
             data: { subjectId },
             success: (response) => {
                 response = JSON.parse(response);
-                if (response.success) {
+                if (response.status === "success") {
                     const subject = response.subject;
                     $('#editSubjectId').val(subject.subject_id);
                     $('#editYear').val(subject.year);
