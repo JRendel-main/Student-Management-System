@@ -72,7 +72,15 @@
                 </div>
             </li>
 
-            <li class="side-nav-title">Attendance</li>
+            <!-- Section -->
+            <li class="side-nav-item">
+                <a href="section.php" class="side-nav-link">
+                    <i class="ri-group-line"></i>
+                    <span> Section </span>
+                </a>
+            </li>
+
+            <li class=" side-nav-title">Attendance</li>
 
             <li class="side-nav-item">
                 <a href="attendance.php" class="side-nav-link">

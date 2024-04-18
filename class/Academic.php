@@ -130,4 +130,19 @@ class Academic
 
         return $data;
     }
+
+    public function getStrand($strand_id)
+    {
+        $query = "SELECT * FROM strand WHERE strand_id = $strand_id";
+        $result = $this->conn->query($query);
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
 }
