@@ -49,58 +49,50 @@ if ($_SESSION['role'] != 'teacher') {
                                         <li class="breadcrumb-item active">Dashboard</li>
                                     </ol>
                                 </div>
-                                <h4 class="page-title">Subject Lists</h4>
+                                <h4 class="page-title">Student Lists</h4>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <?php
+                        if (isset($_GET['section_id'])) {
+                            $section = new Section($conn);
+                            $sectionId = $_GET['section_id'];
+
+                            $section = $section->getSection($sectionId);
+                            $strand_id = $section['strand_id'];
+
+                            $strand = new Academic($conn);
+                            $strand = $strand->getStrand($strand_id);
+
+                            foreach ($strand as $strand) {
+                                $strand_name = $strand['strand_name'];
+                            }
+                        }
                         $teacher = new Academic($conn);
                         $teacherId = $teacher->getTeacherId($userId);
-
-                        // display all section with card
-                        $section = new Section($conn);
-                        $sectionLists = $section->getAdvisorySection($teacherId);
-
-                        if ($sectionLists) {
-                            $sectionId = $sectionLists['section_id'];
-                            $sectionName = $sectionLists['section_name'];
-                            $strand_id = $sectionLists['strand_id'];
-
-                            $academic = new Academic($conn);
-                            $strand = $academic->getStrand($strand_id);
-
-                            foreach ($strand as $row) {
-                                $strand_name = $row['strand_name'];
-                            }
-
-                            $grade = $sectionLists['year'];
-                            $totalStudents = $academic->getTotalStudents($teacherId);
-
-                            echo '<div class="col-md-6 col-xl-3 text-center">
-                                <div class="card" style="border: 1px solid #ddd; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
-                                    <div class="card-body">
-                                        <h5 class="card-title font-size-16" style="color: #333;">' . $sectionName . ' - Grade ' . $grade . '</h5>
-                                        <p class="card-text text-muted" style="font-size: 14px;">' . $strand_name . '</p>
-                                        <p class="card-text text-muted" style="font-size: 14px;">Total Students: ' . $totalStudents . '</p>
-                                        <a href="viewGrades.php?section_id=' . $sectionId . '" class="btn btn-success">
-                                        <i class="bi bi-eye"></i>
-                                        View Students</a>
-                                    </div>
-                                </div>
-                            </div>';
-                        } else {
-                            echo '<div class="col-md-6 col-xl-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title font-size-16">No Subject</h5>
-                                <p class="card-text text-muted">You have no subject yet.</p>
+                        ?>
+                        <input type="hidden" id="teacher_id" value="<?php echo $teacherId; ?>">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Boys List</h4>
+                                    <table id="boys" class="table table-striped dt-responsive nowrap w-100">
+                                        <thead></thead>
+                                    </table>
                                 </div>
                             </div>
-                        </div>';
-                        }
-                        ?>
-
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">Girls List</h4>
+                                    <table id="girls" class="table table-striped dt-responsive nowrap w-100">
+                                        <thead></thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div> <!-- container -->
@@ -133,7 +125,7 @@ if ($_SESSION['role'] != 'teacher') {
     <script src="../assets/vendor/datatables.net-buttons/js/buttons.print.min.js"></script>
     <script src="../assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
     <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
-    <script src="scripts/section.js"></script>
+    <script src="scripts/student-lists.js"></script>
 
 
 </body>
