@@ -79,18 +79,6 @@ if ($_SESSION['role'] != 'teacher') {
                                         </div>
                                     </div>
                                 </div>';
-                            echo '<div class="col-md-6 col-xl-3 text-center">
-                                <div class="card" style="border: 1px solid #ddd; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
-                                    <div class="card-body">
-                                        <h5 class="card-title font-size-16" style="color: #333;">' . $sectionName . ' - Grade ' . $grade . '</h5>
-                                        <p class="card-text text-muted" style="font-size: 14px;">' . $strand_name . '</p>
-                                        <p class="card-text text-muted" style="font-size: 14px;">Total Students: ' . $totalStudents . '</p>
-                                        <a href="viewGrades.php?section_id=' . $sectionId . '" class="btn btn-success">
-                                        <i class="bi bi-eye"></i>
-                                        View Students</a>
-                                    </div>
-                                </div>
-                            </div>';
                         } else {
                             echo '<div class="col-md-6 col-xl-3">
                                     <div class="card">
@@ -102,7 +90,6 @@ if ($_SESSION['role'] != 'teacher') {
                                     </div>';
                         }
                         ?>
-
                     </div>
                 </div>
             </div> <!-- container -->
