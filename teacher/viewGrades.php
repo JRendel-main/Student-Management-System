@@ -60,6 +60,12 @@ if ($_SESSION['role'] != 'teacher') {
                         </div>
                     </div>
                     <div class="row">
+                        <?php
+                        if (isset($_GET['section_id'])) {
+                            $section = new Section($conn);
+                            $sectionId = $_GET['section_id'];
+                        }
+                        ?>
                         <div class="card">
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -144,7 +150,24 @@ if ($_SESSION['role'] != 'teacher') {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- Add rows for each student -->
+                                            <?php
+                                            $student = new Student($conn);
+                                            $students = $student->getStudentsBySection($sectionId);
+
+                                            // seprate male and female
+                                            $boys = [];
+                                            $girls = [];
+
+                                            // display name only on first row
+                                            foreach ($students as $student) {
+                                                $studentId = $student['student_id'];
+                                                $firstName = $student['first_name'];
+                                                $lastName = $student['last_name'];
+                                                $student_name = $lastName . ', ' . $firstName;
+
+
+                                            }
+                                            ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -192,7 +215,23 @@ if ($_SESSION['role'] != 'teacher') {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#datatable').DataTable();
+            var table = $('#datatable').DataTable({
+                "scrollX": true,
+                "paging": false,
+                "searching": false,
+                "info": false,
+                "ordering": false,
+                "autoWidth": false,
+                "responsive": true,
+                "fixedHeader": true,
+                "select": true,
+                "keys": true,
+                "buttons": ['copy', 'excel', 'pdf', 'print']
+            });
+
+            $('#datatable tbody').on('click', 'td', function () {
+                table.cell(this).edit();
+            });
         });
     </script>
 </body>
