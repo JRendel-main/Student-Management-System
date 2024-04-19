@@ -12,9 +12,10 @@ $strand = $_POST['strand'];
 $semester = $_POST['semester'];
 $subject_name = $_POST['subjectName'];
 $subjectCode = $_POST['subjectCode'];
+$subjectTeacher = $_POST['subjectTeacher'];
 
 $subject = new Subject($conn);
-$subject->addSubject($academic_year, $strand, $semester, $subject_name, $subjectCode);
+$subject->addSubject($subjectTeacher, $academic_year, $strand, $semester, $subject_name, $subjectCode);
 
 if ($subject) {
     echo json_encode(['success' => true, 'message' => 'Subject added successfully']);
