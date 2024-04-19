@@ -24,9 +24,9 @@ class Subject
         return $data;
     }
 
-    public function addSubject($academic_year, $strand, $semester, $subject_name, $subjectCode)
+    public function addSubject($subjctTeacher, $academic_year, $strand, $semester, $subject_name, $subjectCode)
     {
-        $query = "INSERT INTO subject (academic_year_id, strand_id, semester_id, subject_name, subject_code) VALUES ('$academic_year', '$strand', '$semester', '$subject_name', '$subjectCode')";
+        $query = "INSERT INTO subject (subject_teacher, academic_year_id, strand_id, semester_id, subject_name, subject_code) VALUES ('$subjctTeacher', '$academic_year', '$strand', '$semester', '$subject_name', '$subjectCode')";
         $result = $this->conn->query($query);
 
         if (!$result) {
@@ -83,5 +83,18 @@ class Subject
         }
 
         return $result;
+    }
+
+    public function getSubject($subjectId)
+    {
+        $query = "SELECT * FROM subject WHERE subject_id = $subjectId";
+        $result = $this->conn->query($query);
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            $data = $result->fetch_assoc();
+        }
+
+        return $data;
     }
 }

@@ -60,23 +60,25 @@ if ($_SESSION['role'] != 'teacher') {
 
                         // display all section with card
                         $section = new Section($conn);
-                        $sectionLists = $section->getAdvisorySection($teacherId);
+                        $sectionLists = $section->getSubjectSection($teacherId);
 
                         if ($sectionLists) {
                             $sectionId = $sectionLists['section_id'];
+                            $year = $sectionLists['year'];
                             $sectionName = $sectionLists['section_name'];
-                            $strand_id = $sectionLists['strand_id'];
+                            $subjectName = $sectionLists['subject_name'];
+                            $subjectId = $sectionLists['subject_id'];
 
-                            $academic = new Academic($conn);
-                            $strand = $academic->getStrand($strand_id);
-
-                            foreach ($strand as $row) {
-                                $strand_name = $row['strand_name'];
-                            }
-
-                            $grade = $sectionLists['year'];
-                            $totalStudents = $academic->getTotalStudents($teacherId);
-
+                            echo '<div class="col-md-6 col-xl-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title font-size-16">' . $year . ' - ' . $sectionName . '</h5>
+                                            <p class="card-text text-muted">' . $subjectName . '</p>
+                                            <a href="subject.php?section_id=' . $sectionId . '&subjectId=' . $subjectId . '" class="btn btn-success">
+                                            <i class="bi bi-eye"></i> View Students</a>
+                                        </div>
+                                    </div>
+                                </div>';
                             echo '<div class="col-md-6 col-xl-3 text-center">
                                 <div class="card" style="border: 1px solid #ddd; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
                                     <div class="card-body">
@@ -91,13 +93,13 @@ if ($_SESSION['role'] != 'teacher') {
                             </div>';
                         } else {
                             echo '<div class="col-md-6 col-xl-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title font-size-16">No Subject</h5>
-                                <p class="card-text text-muted">You have no subject yet.</p>
-                                </div>
-                            </div>
-                        </div>';
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title font-size-16">No Subject</h5>
+                                            <p class="card-text text-muted">You have no subject yet.</p>
+                                            </div>
+                                        </div>
+                                    </div>';
                         }
                         ?>
 
