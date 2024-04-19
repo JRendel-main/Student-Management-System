@@ -164,8 +164,6 @@ if ($_SESSION['role'] != 'teacher') {
                                                 $firstName = $student['first_name'];
                                                 $lastName = $student['last_name'];
                                                 $student_name = $lastName . ', ' . $firstName;
-
-
                                             }
                                             ?>
                                         </tbody>
