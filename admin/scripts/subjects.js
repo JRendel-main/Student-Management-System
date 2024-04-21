@@ -12,7 +12,7 @@ $(document).ready(() => {
             data: formData,
             success: (response) => {
                 response = JSON.parse(response);
-                if (response.status) {
+                if (response.success) {
                     swal.fire({
                         title: 'Subject Added',
                         icon: 'success',

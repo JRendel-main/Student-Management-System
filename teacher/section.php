@@ -63,31 +63,37 @@ if ($_SESSION['role'] != 'teacher') {
                         $sectionLists = $section->getSubjectSection($teacherId);
 
                         if ($sectionLists) {
-                            $sectionId = $sectionLists['section_id'];
-                            $year = $sectionLists['year'];
-                            $sectionName = $sectionLists['section_name'];
-                            $subjectName = $sectionLists['subject_name'];
-                            $subjectId = $sectionLists['subject_id'];
+                            // Loop through each section
+                            foreach ($sectionLists as $section) {
+                                $sectionId = $section['section_id'];
+                                $year = $section['year'];
+                                $sectionName = $section['section_name'];
+                                $subjectName = $section['subject_name'];
+                                $subjectId = $section['subject_id'];
 
-                            echo '<div class="col-md-6 col-xl-3">
-                                    <div class="card">
-                                        <div class="card-body text-center">
-                                            <h5 class="card-title font-size-16">' . $year . ' - ' . $sectionName . '</h5>
-                                            <p class="card-text text-muted">' . $subjectName . '</p>
-                                            <a href="subject.php?section_id=' . $sectionId . '&subjectId=' . $subjectId . '" class="btn btn-success">
-                                            <i class="bi bi-eye"></i> View Students</a>
-                                        </div>
-                                    </div>
-                                </div>';
+                                // Display card for each section
+                                echo '<div class="col-md-6 col-xl-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title font-size-16">' . $year . ' - ' . $sectionName . '</h5>
+                        <p class="card-text text-muted">' . $subjectName . '</p>
+                        <a href="subject.php?section_id=' . $sectionId . '&subjectId=' . $subjectId . '" class="btn btn-success">
+                            <i class="bi bi-eye"></i> View Students
+                        </a>
+                    </div>
+                </div>
+            </div>';
+                            }
                         } else {
+                            // Display a message if there are no sections
                             echo '<div class="col-md-6 col-xl-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title font-size-16">No Subject</h5>
-                                            <p class="card-text text-muted">You have no subject yet.</p>
-                                            </div>
-                                        </div>
-                                    </div>';
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title font-size-16">No Subject</h5>
+                    <p class="card-text text-muted">You have no subject yet.</p>
+                </div>
+            </div>
+        </div>';
                         }
                         ?>
                     </div>

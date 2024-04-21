@@ -85,8 +85,9 @@ if ($_SESSION['role'] != 'teacher') {
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <button class="btn btn-success" id="addGrade">
-                                            <i class="bi bi-plus"></i>
+                                        <!-- Add grades modal -->
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#addGradesModal">
                                             Add Grades
                                         </button>
                                     </div>
@@ -106,10 +107,131 @@ if ($_SESSION['role'] != 'teacher') {
                                 </div>
                             </div>
                             <div class="card-body">
-                                <?php
-                                $grades = new Grades($conn);
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <?php
+                                        $grade = new Grades($conn);
+                                        $grades = $grade->getGradesForStudentAndSubject($student_id, $subject_id, $semester[0]['semester_id']);
 
-                                ?>
+                                        $totalHG = 0;
+                                        $totalIG = 0;
+                                        $weightedScore = 0;
+                                        $gradeNumber = 0;
+
+                                        $totalGrades = 0;
+                                        // create a table for each grade component
+                                        foreach ($gradeComponent as $gc) {
+                                            echo '<h5>' . $gc['component_name'] . ' - ' . $gc['weight'] . '%</h5>';
+                                            echo '<table class="table table-bordered" id="gradesTable">';
+                                            echo '<thead>';
+                                            echo '<tr>';
+                                            // count every grades in the grade component
+                                            $count = 1;
+                                            foreach ($grades as $grade) {
+                                                if ($grade['component_id'] == $gc['component_id']) {
+                                                    $count++;
+                                                }
+                                            }
+                                            echo '<th colspan="' . $count . '">Grade Factor</th>';
+                                            echo '<th>Total</th>';
+                                            echo '<th scope="col">Percentage Score</th>';
+                                            echo '<th scope="col">Weighted Score</th>';
+                                            echo '</tr>';
+                                            echo '<tr>';
+                                            echo '</thead>';
+                                            echo '<tbody>';
+                                            // displayt every initial grade
+                                            echo '<tr>';
+                                            echo '<td><b>Highest </b></td>';
+                                            foreach ($grades as $grade) {
+                                                // display only what is in the grade component
+                                                if ($grade['component_id'] == $gc['component_id']) {
+                                                    echo '<td>' . $grade['highest_grade'] . '</td>';
+                                                    $totalHG += $grade['highest_grade'];
+                                                }
+                                            }
+                                            echo '<td>' . $totalHG . '</td>';
+                                            // convert the totalHG to percentage based on the every grade and the total
+                                            if ($totalHG == 0 && $totalHG == 0) {
+                                                $percentage = 0;
+                                            } else {
+                                                $percentage = ($totalHG / $totalHG) * 100;
+                                            }
+                                            echo '<td>' . $percentage . '%</td>';
+                                            $weightScore = $percentage * (0.01 * $gc['weight']);
+                                            // round off the weighted score to 2 decimal places
+                                            $weightScore = round($weightScore, 2);
+                                            echo '<td>' . $weightScore . '%</td>';
+                                            echo '</tr>';
+                                            echo '<tr>';
+                                            echo '<td><b>Initial Grade</b></td>';
+                                            foreach ($grades as $grade) {
+                                                // display only what is in the grade component
+                                                if ($grade['component_id'] == $gc['component_id']) {
+                                                    echo '<td class="initial-grade" data-grade-id="' . $grade['grades_id'] . '">' . $grade['initial_grade'] . '</td>';
+                                                    $totalIG += $grade['initial_grade'];
+                                                }
+                                            }
+                                            echo '<td>' . $totalIG . '</td>';
+                                            // convert the totalIG to percentage based on the every grade and the total
+                                            if ($totalIG == 0 && $totalHG == 0) {
+                                                $percentage = 0;
+                                            } else {
+                                                $percentage = ($totalIG / $totalHG) * 100;
+                                            }
+                                            // round off the percentage to 2 decimal places
+                                            $percentage = round($percentage, 2);
+                                            echo '<td>' . $percentage . '%</td>';
+                                            // display the final grade weighted by the percentage
+                                            $weightScore = $percentage * (0.01 * $gc['weight']);
+                                            // show only 2 decimal places dont round off
+                                            echo '<td><b>' . $weightScore . '%</b></td>';
+                                            echo '</tr>';
+                                            echo '</tbody>';
+                                            echo '</table>';
+
+                                            $totalGrades += $weightScore;
+
+                                            // reset the totalHG and totalIG
+                                            $totalHG = 0;
+                                            $totalIG = 0;
+                                        }
+
+                                        // get the grade number
+                                        if ($totalGrades <= 75) {
+                                            $gradeNumber = '<span class="badge bg-danger">Failed</span>';
+                                        } else {
+                                            $gradeNumber = '<span class="badge bg-success">Passed</span>';
+                                        }
+                                        ?>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h5>Final Grade</h5>
+                                        <table class="table table-stripped text-center">
+                                            <thead>
+                                                <tr>
+                                                    <th>Initial Grade</th>
+                                                    <th>Quarterly Grade</th>
+                                                    <th>Remark</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><?php
+                                                    $roundedRawGrades = round($totalGrades, 2);
+                                                    echo $roundedRawGrades; ?>%</td>
+                                                    <td>
+                                                        <?php
+                                                        $roundedGrades = round($totalGrades);
+                                                        echo $roundedGrades;
+                                                        ?>
+                                                    </td>
+                                                    <td><?php echo $gradeNumber; ?></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -117,6 +239,57 @@ if ($_SESSION['role'] != 'teacher') {
             </div> <!-- container -->
         </div> <!-- content -->
     </div>
+
+    <!-- Add Grades Modal -->
+    <div class="modal fade" id="addGradesModal" tabindex="-1" aria-labelledby="addGradesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="addGradesForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addGradesModalLabel">Add Grades</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="gradeComponent" class="form-label">Quarter</label>
+                            <select class="form-select" id="quarter" name="semester_id">
+                                <?php
+                                foreach ($semester as $sem) {
+                                    echo '<option value="' . $sem['semester_id'] . '">' . $sem['Quarter'] . ' Grading (' . $sem['semester_name'] . ')</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gradeComponent" class="form-label">Grade Component</label>
+                            <select class="form-select" id="gradeComponent" name="component_id">
+                                <?php
+                                foreach ($gradeComponent as $gc) {
+                                    echo '<option value="' . $gc['component_id'] . '">' . $gc['component_name'] . ' - ' . $gc['weight'] . '%</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="highestGrade" class="form-label">Highest Possible Grade</label>
+                            <input type="number" class="form-control" id="highestGrade" name="highest_grade" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="grade" class="form-label">Grade</label>
+                            <input type="number" class="form-control" id="grade" name="initial_grade" required>
+                        </div>
+                        <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
+                        <input type="hidden" name="subject_id" value="<?php echo $subject_id; ?>">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Grade</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 
     <!-- ============================================================== -->
@@ -147,20 +320,99 @@ if ($_SESSION['role'] != 'teacher') {
     <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Function to calculate total grade for each component
-            function calculateTotalGrade(grades, components) {
-                let total = 0;
-                components.forEach(function (component) {
-                    let componentGrade = grades[component['component_id']] || 0;
-                    total += componentGrade * (component['weight'] / 100);
-                });
-                return total.toFixed(2); // Return total grade rounded to 2 decimal places
-            }
+            $('.initial-grade').click(function () {
+                var gradeId = $(this).data('grade-id');
 
-            // Add functionality to add grade button
-            $('#addGrade').click(function () {
-                // Implement your logic to add grades here
-                // You may use AJAX to send data to the server and update the database
+                // Open a SweetAlert prompt for confirmation
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // User confirmed deletion, send AJAX request to delete the grade
+                        $.ajax({
+                            type: 'POST',
+                            url: 'controllers/delete-grade.php',
+                            data: {
+                                grade_id: gradeId
+                            },
+                            success: function (response) {
+                                var data = JSON.parse(response);
+                                if (data.status === 'success') {
+                                    // Grade deleted successfully, show success message
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Deleted!',
+                                        text: 'The grade has been deleted.',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    }).then(() => {
+                                        // Reload the page
+                                        location.reload();
+                                    });
+                                } else {
+                                    // Error deleting grade, show error message
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: 'Something went wrong! Please try again.'
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+            $('#addGradesForm').submit(function (e) {
+                e.preventDefault();
+
+                // add validation, the grades cannot be greater than the highest grade
+                var highestGrade = $('#highestGrade').val();
+                var grade = $('#grade').val();
+
+                if (parseInt(grade) > parseInt(highestGrade)) {
+                    // use bootstrap validation form
+                    $('#highestGrade').addClass('is-invalid');
+                    $('#grade').addClass('is-invalid');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Grade cannot be greater than the highest grade'
+                    });
+                    return;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'controllers/add-grades.php',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        var response = JSON.parse(response);
+                        if (response.status == 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Grade added successfully'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An error occurred. Please try again'
+                            });
+                        }
+                    }
+                });
             });
         });
     </script>
