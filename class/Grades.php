@@ -33,8 +33,35 @@ class Grades
         $data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
 
         return $data;
+    }
 
+    public function deleteComponent($component)
+    {
+        $sql = "DELETE FROM grade_component WHERE component_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $component); // Assuming $component is an integer
+        $stmt->execute();
 
+        // check if the delete was successful
+        return $stmt->affected_rows;
+    }
 
+    public function getGradesForStudentAndSubject($student_id, $subject_id)
+    {
+        $sql = "SELECT * FROM grades WHERE student_id = ? AND subject_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$student_id, $subject_id]);
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+        return $data;
+    }
+
+    public function calculateTotalGrade($grades, $gradeComponent)
+    {
+        $totalGrade = 0;
+        foreach ($gradeComponent as $component) {
+            $totalGrade += $grades[$component['component_id']] * $component['weight'];
+        }
+        return $totalGrade;
     }
 }

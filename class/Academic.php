@@ -145,4 +145,19 @@ class Academic
 
         return $data;
     }
+
+    public function getSemester()
+    {
+        $query = "SELECT * FROM semester ORDER BY Quarter ASC";
+        $result = $this->conn->query($query);
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
 }
