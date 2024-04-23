@@ -131,6 +131,16 @@ class Academic
         return $data;
     }
 
+    public function getSemesterId($semester)
+    {
+        $query = "SELECT * FROM semester WHERE semester_id = '$semester'";
+        $results = $this->conn->query($query);
+
+        // get all 
+        $semester = $results->fetch_assoc();
+        return $semester;
+    }
+
     public function getStrand($strand_id)
     {
         $query = "SELECT * FROM strand WHERE strand_id = $strand_id";

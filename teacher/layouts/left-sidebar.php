@@ -54,7 +54,7 @@
                 <a data-bs-toggle="collapse" href="#sidebarStudent" aria-expanded="false"
                     class="side-nav-link side-sub-nav">
                     <i class="ri-user-3-line"></i>
-                    <span> Student </span>
+                    <span> Advisory Class </span>
                     <span class="menu-arrow"></span>
                 </a>
                 <div class="collapse" id="sidebarStudent">

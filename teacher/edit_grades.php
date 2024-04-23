@@ -75,12 +75,11 @@ if ($_SESSION['role'] != 'teacher') {
                                             <?php
                                             $academic = new Academic($conn);
                                             $semester = $academic->getSemester();
-                                            // add select dropdown for grading period
-                                            echo '<select class="form-select" id="gradingPeriod">';
-                                            foreach ($semester as $sem) {
-                                                echo '<option value="' . $sem['semester_id'] . '">' . $sem['Quarter'] . ' Grading (' . $sem['semester_name'] . ')</option>';
-                                            }
-                                            echo '</select>';
+
+                                            $semesterId = $_GET['quarter_id'];
+                                            $semesterName = $academic->getSemesterId($semesterId);
+
+                                            echo '<h5>' . $semesterName['Quarter'] . ' Quarter</h5>';
                                             ?>
                                         </div>
                                     </div>
@@ -92,17 +91,10 @@ if ($_SESSION['role'] != 'teacher') {
                                         </button>
                                     </div>
                                     <div class="col-md-6 align-items-right">
-                                        <!-- two button for next and prev -->
-                                        <div class="btn-group gap-3" role="group" aria-label="Basic example">
-                                            <button type="button" class="btn btn-secondary" id="prev">
-                                                <i class="bi bi-arrow-left"></i>
-                                                Previous
-                                            </button>
-                                            <button type="button" class="btn btn-secondary" id="next">
-                                                Next
-                                                <i class="bi bi-arrow-right"></i>
-                                            </button>
-                                        </div>
+                                        <button class="btn btn-sm btn-success">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                            Refresh
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -111,7 +103,7 @@ if ($_SESSION['role'] != 'teacher') {
                                     <div class="col-md-8">
                                         <?php
                                         $grade = new Grades($conn);
-                                        $grades = $grade->getGradesForStudentAndSubject($student_id, $subject_id, $semester[0]['semester_id']);
+                                        $grades = $grade->getGradesForStudentAndSubject($student_id, $subject_id, $_GET['quarter_id']);
 
                                         $totalHG = 0;
                                         $totalIG = 0;
@@ -224,9 +216,14 @@ if ($_SESSION['role'] != 'teacher') {
                                                         <?php
                                                         $roundedGrades = round($totalGrades);
                                                         echo $roundedGrades;
+
                                                         ?>
                                                     </td>
                                                     <td><?php echo $gradeNumber; ?></td>
+                                                    <?php
+                                                    $grade = new Grades($conn);
+                                                    $grade->submitFinalGrade($student_id, $subject_id, $_GET['quarter_id'], $roundedGrades);
+                                                    ?>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -289,9 +286,6 @@ if ($_SESSION['role'] != 'teacher') {
             </div>
         </div>
     </div>
-
-
-
     <!-- ============================================================== -->
     <!-- End Page content -->
     <!-- ============================================================== -->
