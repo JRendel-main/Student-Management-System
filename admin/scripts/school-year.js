@@ -6,7 +6,8 @@ $(document).ready(function () {
                 title: 'Academic ID',
                 data: null,
                 render: function (data, type, row, meta) {
-                    return meta.row + 1;
+                    data = meta.row + 1;
+                    return data;
                 }
             },
             {
@@ -21,8 +22,8 @@ $(document).ready(function () {
                 title: 'Action',
                 data: null,
                 render: function (data, type, row) {
-                    return '<button class="btn btn-danger btn-sm btn-delete" data-id="' + row.id + '">Delete</button>' +
-                        '<button class="btn btn-info btn-sm btn-edit" data-id="' + row.id + '">Edit</button>';
+                    return '<button class="btn btn-danger btn-sm btn-delete" data-id="' + row.academic_year_id + '">Delete</button>' +
+                        '<button class="btn btn-info btn-sm btn-edit" data-id="' + row.academic_year_id + '">Edit</button>';
                 }
             }
         ],
@@ -48,44 +49,62 @@ $(document).ready(function () {
         e.preventDefault();
         var rowId = $(this).data('id');
 
-        // Remove row from DataTable (optional)
-        var index = table.row($(this).parents('tr')).index();
-        table.row(index).remove().draw();
-
-        // Perform delete operation (AJAX call to server)
-        // Example AJAX call:
-        // $.post('controllers/deleteAcademicYear.php', { id: rowId })
-        //    .done(function(response) {
-        //        // Handle success
-        //    })
-        //    .fail(function(error) {
-        //        // Handle error
-        //    });
+        // Send request to delete data
+        $.ajax({
+            url: 'controllers/deleteAcademicYear.php',
+            type: 'POST',
+            data: {
+                id: rowId
+            },
+            success: function (response) {
+                var response = JSON.parse(response);
+                if (response.status === 'success') {
+                    swal.fire({
+                        title: 'Success',
+                        text: response.message,
+                        icon: 'success'
+                    }).then(function () {
+                        // Refresh the page
+                        location.reload();
+                    });
+                }
+            },
+            error: function (error) {
+                console.error('Error deleting data:', error);
+            }
+        });
     });
 
-    // Event handler for edit button
-    $('#school-year').on('click', '.btn-edit', function (e) {
-        e.preventDefault();
-        var rowId = $(this).data('id');
-
-        // Redirect to edit page
-        // Example:
-        // window.location.href = 'editAcademicYear.php?id=' + rowId;
-    });
 
     // Event handler for form submission
-    $('#addTeacherForm').submit(function (e) {
+    $('.submit-school').on('click', function (e) {
+        // prevent default form submission
         e.preventDefault();
-        var formData = $(this).serialize();
+        var schoolYear = $('#schoolYear').val();
 
-        // Perform add operation (AJAX call to server)
-        // Example AJAX call:
-        // $.post('controllers/addTeacher.php', formData)
-        //    .done(function(response) {
-        //        // Handle success
-        //    })
-        //    .fail(function(error) {
-        //        // Handle error
-        //    });
+        $.ajax({
+            url: 'controllers/addAcademicYear.php',
+            type: 'POST',
+            data: {
+                schoolYear: schoolYear
+            },
+            success: function (response) {
+                var response = JSON.parse(response);
+                if (response.status === 'success') {
+                    swal.fire({
+                        title: 'Success',
+                        text: response.message,
+                        icon: 'success'
+                    });
+                }
+            },
+            error: function (error) {
+                console.error('Error adding school year:', error);
+            }
+        })
+    });
+
+    $('#addSchoolYearForm').submit(function () {
+
     });
 });

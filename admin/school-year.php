@@ -46,7 +46,7 @@ if ($_SESSION['role'] != 'admin') {
                             <div class="page-title-box">
                                 <div class="page-title-right">
                                     <button class="btn btn-success waves-effect waves-light" data-bs-toggle="modal"
-                                        data-bs-target="#addTeacherModal">
+                                        data-bs-target="#addSchoolYearModal">
                                         <i class="bi bi-plus"></i>
                                         Add School Year</button>
                                 </div>
@@ -82,6 +82,30 @@ if ($_SESSION['role'] != 'admin') {
 
     </div>
     <!-- END wrapper -->
+
+    <!-- Add School year modal -->
+    <div class="modal fade" id="addSchoolYearModal" tabindex="-1" aria-labelledby="addSchoolYearModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSchoolYearModalLabel">Add School Year</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="schoolYear" class="col-form-label">School Year:</label>
+                        <input type="text" class="form-control" id="schoolYear" name="schoolYear" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary submit-school">Add School Year</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <?php include 'layouts/right-sidebar.php'; ?>
 

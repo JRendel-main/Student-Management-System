@@ -170,4 +170,28 @@ class Academic
 
         return $data;
     }
+
+    public function addAcademicYear($schoolYear)
+    {
+        $query = "INSERT INTO academic_year (year) VALUES ('$schoolYear')";
+        $result = $this->conn->query($query);
+
+        if (!$result) {
+            die("Error in SQL query: " . $this->conn->error);
+        }
+
+        return $result;
+    }
+
+    public function deleteAcademicYear($schoolYear)
+    {
+        $query = "DELETE FROM academic_year WHERE academic_year_id = $schoolYear";
+        $result = $this->conn->query($query);
+
+        if (!$result) {
+            die("Error in SQL query: " . $this->conn->error);
+        }
+
+        return $result;
+    }
 }
