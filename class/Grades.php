@@ -123,4 +123,151 @@ class Grades
         // check if the delete was successful
         return $stmt->affected_rows;
     }
+
+    public function getAllStudentFinals($teacher_id)
+    {
+        $sql = "SELECT * FROM student WHERE section_id = (SELECT section_id FROM section WHERE advisor_id = ?) ORDER BY last_name ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $teacher_id); // Assuming $teacher_id is an integer
+        $stmt->execute();
+
+        $result = $stmt->get_result(); // Get the result set
+        $data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+
+        return $data;
+    }
+
+    public function getStudentGrades($student_id)
+    {
+        $sql = "SELECT * FROM grades WHERE student_id = $student_id";
+        $result = $this->conn->query($sql);
+
+        $data = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                // Fetch semester information
+                $semester_id = $row['semester_id'];
+                $semester_sql = "SELECT * FROM semester WHERE semester_id = $semester_id";
+                $semester_result = $this->conn->query($semester_sql);
+                $semester_row = $semester_result->fetch_assoc();
+                $semester_name = $semester_row['semester_name'];
+
+                $data[] = [
+                    'grades_id' => $row['grades_id'],
+                    'semester' => $semester_name,
+                    'component_id' => $row['component_id'],
+                    'highest_grade' => $row['highest_grade'],
+                    'initial_grade' => $row['initial_grade'],
+                    'student_id' => $row['student_id'],
+                    'subject_id' => $row['subject_id']
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    public function getStudentAllSubjects($student_id)
+    {
+        $sql = "SELECT * FROM subject WHERE subject_id IN (SELECT subject_id FROM grades WHERE student_id = ?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $student_id); // Assuming $student_id is an integer
+        $stmt->execute();
+
+        $result = $stmt->get_result(); // Get the result set
+        $data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+
+        return $data;
+    }
+
+    public function calculateTotalGrades($student_id)
+    {
+        $sql = "SELECT * FROM grades WHERE student_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $student_id); // Assuming $student_id is an integer
+        $stmt->execute();
+
+        $result = $stmt->get_result(); // Get the result set
+        $data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+
+        $totalGrades = [];
+        foreach ($data as $grade) {
+            $totalGrades[$grade['subject_id']][] = $grade;
+        }
+
+        return $totalGrades;
+    }
+
+    public function submitFinalGrade($student_id, $subject_id, $semester_id, $final_grade)
+    {
+        // check if there is already a final grade for the student
+        $sql = "SELECT * FROM final_grade WHERE student_id = ? AND subject_id = ? AND semester_id = ?";
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            // Handle the error here, perhaps log it or return an error code
+            return "Prepare failed: (" . $this->conn->errno . ") " . $this->conn->error;
+        }
+
+        $stmt->bind_param("iii", $student_id, $subject_id, $semester_id); // Assuming $student_id, $subject_id, and $semester_id are integers
+        $stmt->execute();
+
+        if ($stmt->errno) {
+            // Handle the error here, perhaps log it or return an error code
+            return "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+        }
+
+        $result = $stmt->get_result(); // Get the result set
+
+        if ($result->num_rows > 0) {
+            // Update the final grade
+            $sql = "UPDATE final_grade SET final_grade = ? WHERE student_id = ? AND subject_id = ? AND semester_id = ?";
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                // Handle the error here, perhaps log it or return an error code
+                return "Prepare failed: (" . $this->conn->errno . ") " . $this->conn->error;
+            }
+            $stmt->bind_param("diii", $final_grade, $student_id, $subject_id, $semester_id); // Assuming $final_grade, $student_id, $subject_id, and $semester_id are integers
+            $stmt->execute();
+
+            if ($stmt->errno) {
+                // Handle the error here, perhaps log it or return an error code
+                return "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            }
+
+            return $stmt->affected_rows;
+        } else {
+            // Insert the final grade
+            $sql = "INSERT INTO final_grade (student_id, subject_id, semester_id, final_grade) VALUES (?, ?, ?, ?)";
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                // Handle the error here, perhaps log it or return an error code
+                return "Prepare failed: (" . $this->conn->errno . ") " . $this->conn->error;
+            }
+            $stmt->bind_param("iiid", $student_id, $subject_id, $semester_id, $final_grade); // Assuming $student_id, $subject_id, and $semester_id are integers
+            $stmt->execute();
+
+            if ($stmt->errno) {
+                // Handle the error here, perhaps log it or return an error code
+                return "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+            }
+
+            return $stmt->affected_rows;
+        }
+    }
+
+    public function getStudentFinals($student_id)
+    {
+        $sql = "SELECT s.subject_name, fg.final_grade, sm.Quarter FROM subject s, final_grade fg, semester sm WHERE student_id = ? AND s.subject_id = fg.subject_id AND sm.semester_id = fg.semester_id ORDER BY sm.Quarter ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $student_id); // Assuming $student_id is an integer
+        $stmt->execute();
+
+        $result = $stmt->get_result(); // Get the result set
+        $data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+
+        return $data;
+    }
+
+
 }

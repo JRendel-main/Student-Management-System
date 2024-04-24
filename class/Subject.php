@@ -97,4 +97,49 @@ class Subject
 
         return $data;
     }
+
+    public function getStudentSubjects($student_id)
+    {
+        $query = "SELECT * FROM subject WHERE subject_id IN (SELECT subject_id FROM grades WHERE student_id = $student_id)";
+        $result = $this->conn->query($query);
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
+
+    public function getStudentAllSubjectsLists($student_id)
+    {
+        $query = "SELECT * FROM subject WHERE subject_id IN (SELECT subject_id FROM grades WHERE student_id = $student_id)";
+        $result = $this->conn->query($query);
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
+
+    public function getSubjectsBySection($section_id)
+    {
+        $query = "SELECT * FROM subject WHERE strand_id = (SELECT strand_id FROM section WHERE section_id = $section_id)";
+        $result = $this->conn->query($query);
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
 }

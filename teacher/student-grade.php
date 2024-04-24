@@ -57,16 +57,20 @@ if ($_SESSION['role'] != 'teacher') {
                         <div class="col-xl-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="header-title">Student Lists</h4>
+                                    <h4 class="header-title">Grades Lists</h4>
                                     <p class="text-muted font-13 mb-4">
-                                        List of all students in the school.
+                                        List of grades of the student.
                                     </p>
-                                    <table id="student_lists" class="table dt-responsive nowrap w-100">
+                                    <table id="student_lists" class="table dt-responsive table-bordered w-100">
                                         <thead>
                                             <tr>
-                                                <th>Student #</th>
-                                                <th>Learner's Name</th>
-                                                <th>Actions</th>
+                                                <th>Subject Name</th>
+                                                <th>First Quarter</th>
+                                                <th>Second Quarter</th>
+                                                <th>Third Quarter</th>
+                                                <th>Fourth Quarter</th>
+                                                <th>Final Grade</th>
+                                                <th>Remarks</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -107,39 +111,65 @@ if ($_SESSION['role'] != 'teacher') {
     <script src="../assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
     <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
     <script>
-        $(document).ready(() => {
-            $.ajax({
-                type: "POST",
-                url: "controllers/getAllStudents.php",
-                data: {
-                    teacher_id: <?php echo $teacher_id; ?>
-                },
-                success: function (response) {
-                    var response = JSON.parse(response);
-
-                    $('#student_lists').DataTable({
-                        data: response,
-                        columns: [{
-                            data: 'student_id'
+    $(document).ready(() => {
+        $.ajax({
+            type: "POST",
+            url: "controllers/getStudentGrades.php",
+            data: {
+                student_id: <?php echo $_GET['student_id']; ?>
+            },
+            success: function(response) {
+                response = JSON.parse(response);
+                $('#student_lists').DataTable({
+                    data: response,
+                    columns: [{
+                            data: 'subject_name'
                         },
                         {
-                            data: 'learner_name'
-                        },
-                        {
-                            data: 'student_id',
-                            render: function (data, type, row) {
-                                return `<a href="student-profile.php?student_id=${data}" class="btn btn-success btn-sm">View All Grades</a>`;
+                            data: function(row) {
+                                return row.grades[0] ? row.grades[0].final_grade :
+                                    '';
                             }
                         },
-                        ],
-                        "order": [
-                            [2, "asc"]
-                        ]
-                    });
-                }
-            });
-        })
+                        {
+                            data: function(row) {
+                                return row.grades[1] ? row.grades[1].final_grade :
+                                    '';
+                            }
+                        },
+                        {
+                            data: function(row) {
+                                return row.grades[2] ? row.grades[2].final_grade :
+                                    '';
+                            }
+                        },
+                        {
+                            data: function(row) {
+                                return row.grades[3] ? row.grades[3].final_grade :
+                                    '';
+                            }
+                        },
+                        {
+                            data: 'final_grade'
+                        },
+                        {
+                            data: 'remarks',
+                            render: function(data) {
+                                return data == 'Passed' ?
+                                    '<span class="badge bg-success">Passed</span>' :
+                                    '<span class="badge bg-danger">Failed</span>';
+                            }
+                        }
+                    ],
+                    "order": [
+                        [0, "asc"]
+                    ]
+                });
+            }
+        });
+    })
     </script>
+
 </body>
 
 </html>

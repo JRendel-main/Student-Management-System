@@ -73,4 +73,20 @@ class Section
         }
     }
 
+    public function getStudentSection($student_id)
+    {
+        $sql = "SELECT * FROM section WHERE section_id = (SELECT section_id FROM student WHERE student_id = ?)";
+        $stmt = $this->conn->prepare($sql);
+
+        if ($stmt) {
+            $stmt->bind_param("i", $student_id); // Assuming student_id is an integer
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data = $result->fetch_assoc();
+            return $data;
+        } else {
+            return false;
+        }
+    }
+
 }
