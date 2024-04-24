@@ -185,7 +185,11 @@ if ($_SESSION['role'] != 'teacher') {
                                             // display the final grade weighted by the percentage
                                             $weightScore = $percentage * (0.01 * $gc['weight']);
                                             // show only 2 decimal places dont round off
-                                            echo '<td><b>' . $weightScore . '%</b></td>';
+                                            if ($percentage > 74) {
+                                                echo '<td class="table-success">' . $percentage . '%</td>';
+                                            } else {
+                                                echo '<td class="table-danger">' . $percentage . '%</td>';
+                                            }
                                             echo '</tr>';
                                             echo '</tbody>';
                                             echo '</table>';
