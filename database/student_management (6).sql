@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 21, 2024 at 07:10 PM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
+-- Generation Time: Apr 24, 2024 at 04:11 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -38,7 +38,8 @@ CREATE TABLE `academic_year` (
 --
 
 INSERT INTO `academic_year` (`academic_year_id`, `year`, `status`) VALUES
-(1, '2023-2024', 'current');
+(1, '2023-2024', 'current'),
+(3, '2024-2025', '');
 
 -- --------------------------------------------------------
 
@@ -73,6 +74,29 @@ CREATE TABLE `contact` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `final_grade`
+--
+
+CREATE TABLE `final_grade` (
+  `final_id` int(11) NOT NULL,
+  `student_id` int(11) DEFAULT NULL,
+  `subject_id` int(11) DEFAULT NULL,
+  `semester_id` int(11) NOT NULL,
+  `academic_id` int(11) NOT NULL,
+  `final_grade` int(11) DEFAULT NULL,
+  `remark` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `final_grade`
+--
+
+INSERT INTO `final_grade` (`final_id`, `student_id`, `subject_id`, `semester_id`, `academic_id`, `final_grade`, `remark`) VALUES
+(9, 4, 12, 1, 1, 69, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `grades`
 --
 
@@ -80,6 +104,7 @@ CREATE TABLE `grades` (
   `grades_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `semester_id` int(11) NOT NULL,
+  `academic_id` int(11) NOT NULL,
   `subject_id` int(11) NOT NULL,
   `component_id` int(11) NOT NULL,
   `initial_grade` int(10) NOT NULL,
@@ -90,18 +115,9 @@ CREATE TABLE `grades` (
 -- Dumping data for table `grades`
 --
 
-INSERT INTO `grades` (`grades_id`, `student_id`, `semester_id`, `subject_id`, `component_id`, `initial_grade`, `highest_grade`) VALUES
-(8, 3, 1, 12, 7, 10, 10),
-(9, 3, 3, 12, 7, 10, 10),
-(10, 3, 1, 12, 8, 49, 50),
-(12, 3, 1, 12, 8, 34, 50),
-(13, 3, 1, 12, 9, 31, 50),
-(14, 3, 1, 12, 8, 20, 30),
-(16, 3, 1, 12, 7, 9, 10),
-(17, 3, 1, 12, 7, 10, 10),
-(18, 2, 1, 12, 7, 19, 20),
-(19, 2, 1, 12, 8, 47, 50),
-(20, 2, 1, 12, 9, 48, 50);
+INSERT INTO `grades` (`grades_id`, `student_id`, `semester_id`, `academic_id`, `subject_id`, `component_id`, `initial_grade`, `highest_grade`) VALUES
+(35, 4, 1, 1, 12, 7, 19, 20),
+(36, 4, 1, 1, 12, 8, 91, 100);
 
 -- --------------------------------------------------------
 
@@ -253,7 +269,8 @@ CREATE TABLE `student` (
 
 INSERT INTO `student` (`student_id`, `user_id`, `section_id`, `first_name`, `middle_name`, `last_name`, `email`, `DOB`, `barangay`, `city`, `province`, `nationality`, `religion`, `gender`, `profile_picture_url`, `remarks`) VALUES
 (2, NULL, 7, 'Rommel', 'Bautista', 'Maningas', 'johnrendel87@gmail.com', '2024-04-02', '', 'Cabanatuan City', 'Nueva Ecija', 'Filipino', 'Catholic', 'Female', NULL, 'test'),
-(3, NULL, 7, 'Rommel', 'Dizon', 'Maningas', 'johnrendel87@gmail.com', '2024-04-01', 'San Josef Norte', 'Cabanatuan City', 'Nueva Ecija', 'Filipino', 'Catholic', 'Male', NULL, 'test');
+(3, NULL, 7, 'Rommel', 'Dizon', 'Maningas', 'johnrendel87@gmail.com', '2024-04-01', 'San Josef Norte', 'Cabanatuan City', 'Nueva Ecija', 'Filipino', 'Catholic', 'Male', NULL, 'test'),
+(4, NULL, 7, 'Yamagishi', 'Dizon', 'Ken', 'ken@gmail.com', '2024-04-16', 'San Josef Norte', 'Cabanatuan City', 'Nueva Ecija', 'Japanese', 'Baptist', 'Male', NULL, '');
 
 -- --------------------------------------------------------
 
@@ -288,7 +305,8 @@ CREATE TABLE `subject` (
 
 INSERT INTO `subject` (`subject_id`, `subject_teacher`, `academic_year_id`, `strand_id`, `semester_id`, `subject_name`, `subject_code`) VALUES
 (12, 11, 1, 3, 1, 'Oral Comunication', 'OC -1 '),
-(13, 11, 1, 3, 1, 'Introduction in Computer Programming I', 'CP-1');
+(13, 11, 1, 3, 1, 'Introduction in Computer Programming I', 'CP-1'),
+(14, 12, 1, 1, 1, 'Oral Communication in Context', 'MATS01G');
 
 -- --------------------------------------------------------
 
@@ -383,6 +401,12 @@ ALTER TABLE `contact`
   ADD KEY `student_id` (`student_id`);
 
 --
+-- Indexes for table `final_grade`
+--
+ALTER TABLE `final_grade`
+  ADD PRIMARY KEY (`final_id`);
+
+--
 -- Indexes for table `grades`
 --
 ALTER TABLE `grades`
@@ -460,7 +484,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `academic_year`
 --
 ALTER TABLE `academic_year`
-  MODIFY `academic_year_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `academic_year_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `attendance`
@@ -475,10 +499,16 @@ ALTER TABLE `contact`
   MODIFY `contact_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `final_grade`
+--
+ALTER TABLE `final_grade`
+  MODIFY `final_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- AUTO_INCREMENT for table `grades`
 --
 ALTER TABLE `grades`
-  MODIFY `grades_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `grades_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `grade_component`
@@ -496,13 +526,13 @@ ALTER TABLE `guardian`
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `subject`
 --
 ALTER TABLE `subject`
-  MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `subject_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `user`
