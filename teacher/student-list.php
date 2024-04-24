@@ -107,19 +107,19 @@ if ($_SESSION['role'] != 'teacher') {
     <script src="../assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
     <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
     <script>
-    $(document).ready(() => {
-        $.ajax({
-            type: "POST",
-            url: "controllers/getAllStudents.php",
-            data: {
-                teacher_id: <?php echo $teacher_id; ?>
-            },
-            success: function(response) {
-                var response = JSON.parse(response);
+        $(document).ready(() => {
+            $.ajax({
+                type: "POST",
+                url: "controllers/getAllStudents.php",
+                data: {
+                    teacher_id: <?php echo $teacher_id; ?>
+                },
+                success: function (response) {
+                    var response = JSON.parse(response);
 
-                $('#student_lists').DataTable({
-                    data: response,
-                    columns: [{
+                    $('#student_lists').DataTable({
+                        data: response,
+                        columns: [{
                             data: 'student_id'
                         },
                         {
@@ -127,18 +127,21 @@ if ($_SESSION['role'] != 'teacher') {
                         },
                         {
                             data: 'student_id',
-                            render: function(data, type, row) {
-                                return `<a href="student-grade.php?student_id=${data}" class="btn btn-success btn-sm">View All Grades</a>`;
+                            render: function (data, type, row) {
+                                return `
+                                <a href="student-grade.php?student_id=${data}" class="btn btn-info btn-sm"><i class="bi bi-book"></i></a>
+                                <a href="student-attendance.php?student_id=${data}" class="btn btn-success btn-sm"><i class="bi bi-calendar-check"></i></a>
+                                `;
                             }
                         },
-                    ],
-                    "order": [
-                        [2, "asc"]
-                    ]
-                });
-            }
-        });
-    })
+                        ],
+                        "order": [
+                            [2, "asc"]
+                        ]
+                    });
+                }
+            });
+        })
     </script>
 </body>
 

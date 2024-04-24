@@ -201,7 +201,7 @@ class Grades
     public function submitFinalGrade($student_id, $subject_id, $semester_id, $academic_id, $final_grade)
     {
         // check if there is already a final grade for the student
-        $sql = "SELECT * FROM final_grade WHERE student_id = ? AND subject_id = ? AND semester_id = ?";
+        $sql = "SELECT * FROM final_grade WHERE student_id = ? AND subject_id = ? AND semester_id = ? AND academic_id = ?";
         $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
@@ -209,7 +209,7 @@ class Grades
             return "Prepare failed: (" . $this->conn->errno . ") " . $this->conn->error;
         }
 
-        $stmt->bind_param("iii", $student_id, $subject_id, $semester_id); // Assuming $student_id, $subject_id, and $semester_id are integers
+        $stmt->bind_param("iiii", $student_id, $subject_id, $semester_id, $academic_id); // Assuming $student_id, $subject_id, and $semester_id are integers
         $stmt->execute();
 
         if ($stmt->errno) {
@@ -221,13 +221,13 @@ class Grades
 
         if ($result->num_rows > 0) {
             // Update the final grade
-            $sql = "UPDATE final_grade SET final_grade = ? WHERE student_id = ? AND subject_id = ? AND semester_id = ?";
+            $sql = "UPDATE final_grade SET final_grade = ? WHERE student_id = ? AND subject_id = ? AND semester_id = ? AND academic_id = ?";
             $stmt = $this->conn->prepare($sql);
             if (!$stmt) {
                 // Handle the error here, perhaps log it or return an error code
                 return "Prepare failed: (" . $this->conn->errno . ") " . $this->conn->error;
             }
-            $stmt->bind_param("diii", $final_grade, $student_id, $subject_id, $semester_id); // Assuming $final_grade, $student_id, $subject_id, and $semester_id are integers
+            $stmt->bind_param("diiii", $final_grade, $student_id, $subject_id, $semester_id, $academic_id); // Assuming $final_grade, $student_id, $subject_id, and $semester_id are integers
             $stmt->execute();
 
             if ($stmt->errno) {
