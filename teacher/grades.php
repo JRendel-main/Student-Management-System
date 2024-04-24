@@ -95,16 +95,30 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <select class="form-select" id="quarter" aria-label="Select Quarter">
-                            <option selected disabled>Select Quarter</option>
-                            <?php
-                            $academic = new Academic($conn);
-                            $semester = $academic->getSemester();
-                            foreach ($semester as $sem) {
-                                echo '<option value="' . $sem['semester_id'] . '">' . $sem['Quarter'] . ' Grading (' . $sem['semester_name'] . ')</option>';
-                            }
-                            ?>
-                        </select>
+                        <div class="mb-3">
+                            <select class="form-select" id="quarter" aria-label="Select Quarter">
+                                <option selected disabled>Select Quarter</option>
+                                <?php
+                                $academic = new Academic($conn);
+                                $semester = $academic->getSemester();
+                                foreach ($semester as $sem) {
+                                    echo '<option value="' . $sem['semester_id'] . '">' . $sem['Quarter'] . ' Grading (' . $sem['semester_name'] . ')</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <select class="form-select" id="academic" aria-label="Select Academic Year">
+                                <option selected disabled>Select Academic Year</option>
+                                <?php
+                                $academic = new Academic($conn);
+                                $academics = $academic->getAllAcademicYear();
+                                foreach ($academics as $acad) {
+                                    echo '<option value="' . $acad['academic_year_id'] . '">' . $acad['year'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" id="selectQuarter">Select</button>
@@ -138,24 +152,24 @@
         <script src="../assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
         <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
         <script>
-            $(document).ready(function () {
-                // Initialize Bootstrap tooltips
-                $('[data-bs-toggle="tooltip"]').tooltip();
+        $(document).ready(function() {
+            // Initialize Bootstrap tooltips
+            $('[data-bs-toggle="tooltip"]').tooltip();
 
-                $.ajax({
-                    url: 'controllers/getStudents.php',
-                    type: 'POST',
-                    data: {
-                        section_id: <?php echo $section_id; ?>,
-                        subject_id: <?php echo $subject_id; ?>
-                    },
-                    success: function (data) {
-                        var data = JSON.parse(data);
-                        var gender = data.gender;
+            $.ajax({
+                url: 'controllers/getStudents.php',
+                type: 'POST',
+                data: {
+                    section_id: <?php echo $section_id; ?>,
+                    subject_id: <?php echo $subject_id; ?>
+                },
+                success: function(data) {
+                    var data = JSON.parse(data);
+                    var gender = data.gender;
 
-                        var table = $('#gradesTable').DataTable({
-                            data: data,
-                            columns: [{
+                    var table = $('#gradesTable').DataTable({
+                        data: data,
+                        columns: [{
                                 title: 'Student #',
                                 data: 'student_id'
                             },
@@ -170,7 +184,7 @@
                             {
                                 title: 'Action',
                                 data: 'student_id',
-                                render: function (data) {
+                                render: function(data) {
                                     return `
                                         <a href="#" class="btn btn-info btn-sm edit-grades" data-student-id="${data}" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Grades">
                                             <i class="bi bi-pencil"></i>
@@ -183,45 +197,46 @@
                                     `;
                                 }
                             }
-                            ],
-                            order: [1, 'asc'],
-                            responsive: true,
-                            fixedHeader: true,
-                            buttons: ['copy', 'excel', 'pdf', 'print'],
-                            // make the student id smaller
-                            columnDefs: [{
-                                targets: 0,
-                                width: '5%'
-                            }]
-                        });
-                    }
-                });
+                        ],
+                        order: [1, 'asc'],
+                        responsive: true,
+                        fixedHeader: true,
+                        buttons: ['copy', 'excel', 'pdf', 'print'],
+                        // make the student id smaller
+                        columnDefs: [{
+                            targets: 0,
+                            width: '5%'
+                        }]
+                    });
+                }
+            });
 
-                $('#gradesTable').on('click', '.edit-grades', function (e) {
-                    e.preventDefault();
-                    var studentId = $(this).data('student-id');
+            $('#gradesTable').on('click', '.edit-grades', function(e) {
+                e.preventDefault();
+                var studentId = $(this).data('student-id');
 
-                    // open select modal
-                    $('#selectQuarterModal').modal('show');
-                    $('#selectQuarter').on('click', function () {
-                        // get the select
-                        var quarterId = $('#quarter').val();
+                // open select modal
+                $('#selectQuarterModal').modal('show');
+                $('#selectQuarter').on('click', function() {
+                    // get the select
+                    var quarterId = $('#quarter').val();
+                    var academicId = $('#academic').val();
 
-                        var quarterId =
-                            window.location.href = 'edit_grades.php?student_id=' + studentId +
-                            '&section_id=<?php echo $section_id; ?>&subject_id=<?php echo $subject_id; ?>&quarter_id=' +
-                            quarterId;
-                    })
-                });
+                    var quarterId =
+                        window.location.href = 'edit_grades.php?student_id=' + studentId +
+                        '&section_id=<?php echo $section_id; ?>&subject_id=<?php echo $subject_id; ?>&quarter_id=' +
+                        quarterId + '&academic_id=' + academicId;
+                })
+            });
 
-                $('#gradesTable').on('click', '.delete-grades', function (e) {
-                    e.preventDefault();
-                    var studentId = $(this).data('student-id');
-                    // Redirect to delete grades page with student id as parameter
-                    window.location.href = 'delete_grades.php?student_id=' + studentId +
-                        '&section_id=<?php echo $section_id; ?>&subject_id=<?php echo $subject_id; ?>';
-                });
-            })
+            $('#gradesTable').on('click', '.delete-grades', function(e) {
+                e.preventDefault();
+                var studentId = $(this).data('student-id');
+                // Redirect to delete grades page with student id as parameter
+                window.location.href = 'delete_grades.php?student_id=' + studentId +
+                    '&section_id=<?php echo $section_id; ?>&subject_id=<?php echo $subject_id; ?>';
+            });
+        })
         </script>
 
 

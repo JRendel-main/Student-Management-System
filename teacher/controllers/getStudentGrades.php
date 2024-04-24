@@ -7,8 +7,9 @@ $conn = $db->connect();
 $grades = new Grades($conn);
 
 $student_id = $_POST['student_id'];
+$academic_year = $_POST['academic_id'];
 
-$studentGrades = $grades->getStudentFinals($student_id);
+$studentGrades = $grades->getStudentFinals($student_id, $academic_year);
 
 // Initialize an empty array to store the organized data
 $data = [];

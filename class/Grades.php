@@ -22,11 +22,11 @@ class Grades
         $stmt->execute([$subject_id, $component, $percentage]);
     }
 
-    public function addGrade($semester_id, $component_id, $highest_grade, $initial_grade, $student_id, $subject_id)
+    public function addGrade($semester_id, $component_id, $highest_grade, $initial_grade, $student_id, $subject_id, $academic_id)
     {
-        $sql = "INSERT INTO grades (semester_id, component_id, highest_grade, initial_grade, student_id, subject_id) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO grades (semester_id, component_id, highest_grade, initial_grade, student_id, subject_id, academic_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$semester_id, $component_id, $highest_grade, $initial_grade, $student_id, $subject_id]);
+        $stmt->execute([$semester_id, $component_id, $highest_grade, $initial_grade, $student_id, $subject_id, $academic_id]);
     }
 
     public function getGradesForStudentAndSubjectByComponent($student_id, $subject_id, $component_id)
@@ -67,12 +67,12 @@ class Grades
         return $stmt->affected_rows;
     }
 
-    public function getGradesForStudentAndSubject($student_id, $subject_id, $semester_id)
+    public function getGradesForStudentAndSubject($student_id, $subject_id, $semester_id, $academic_id)
     {
-        $sql = "SELECT a.grades_id, a.initial_grade, a.highest_grade, b.component_name, b.component_id, b.weight FROM grades a JOIN grade_component b ON a.component_id = b.component_id WHERE a.student_id = ? AND b.subject_id = ? AND a.semester_id = ?";
+        $sql = "SELECT a.grades_id, a.initial_grade, a.highest_grade, b.component_name, b.component_id, b.weight FROM grades a JOIN grade_component b ON a.component_id = b.component_id WHERE a.student_id = ? AND b.subject_id = ? AND a.semester_id = ? AND a.academic_id = ?";
         $stmt = $this->conn->prepare($sql);
 
-        $stmt->bind_param("iii", $student_id, $subject_id, $semester_id); // Assuming $student_id and $subject_id are integers
+        $stmt->bind_param("iiii", $student_id, $subject_id, $semester_id, $academic_id); // Assuming $student_id and $subject_id are integers
         $stmt->execute();
 
         $result = $stmt->get_result(); // Get the result set
@@ -198,7 +198,7 @@ class Grades
         return $totalGrades;
     }
 
-    public function submitFinalGrade($student_id, $subject_id, $semester_id, $final_grade)
+    public function submitFinalGrade($student_id, $subject_id, $semester_id, $academic_id, $final_grade)
     {
         // check if there is already a final grade for the student
         $sql = "SELECT * FROM final_grade WHERE student_id = ? AND subject_id = ? AND semester_id = ?";
@@ -238,13 +238,13 @@ class Grades
             return $stmt->affected_rows;
         } else {
             // Insert the final grade
-            $sql = "INSERT INTO final_grade (student_id, subject_id, semester_id, final_grade) VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO final_grade (student_id, subject_id, semester_id, academic_id, final_grade) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->conn->prepare($sql);
             if (!$stmt) {
                 // Handle the error here, perhaps log it or return an error code
                 return "Prepare failed: (" . $this->conn->errno . ") " . $this->conn->error;
             }
-            $stmt->bind_param("iiid", $student_id, $subject_id, $semester_id, $final_grade); // Assuming $student_id, $subject_id, and $semester_id are integers
+            $stmt->bind_param("iiiid", $student_id, $subject_id, $semester_id, $academic_id, $final_grade); // Assuming $student_id, $subject_id, and $semester_id are integers
             $stmt->execute();
 
             if ($stmt->errno) {
@@ -256,11 +256,11 @@ class Grades
         }
     }
 
-    public function getStudentFinals($student_id)
+    public function getStudentFinals($student_id, $academic_id)
     {
-        $sql = "SELECT s.subject_name, fg.final_grade, sm.Quarter FROM subject s, final_grade fg, semester sm WHERE student_id = ? AND s.subject_id = fg.subject_id AND sm.semester_id = fg.semester_id ORDER BY sm.Quarter ASC";
+        $sql = "SELECT s.subject_name, fg.final_grade, sm.Quarter FROM subject s, final_grade fg, semester sm WHERE student_id = ? AND s.subject_id = fg.subject_id AND sm.semester_id = fg.semester_id AND fg.academic_id = ? ORDER BY sm.Quarter ASC";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $student_id); // Assuming $student_id is an integer
+        $stmt->bind_param("ii", $student_id, $academic_id); // Assuming $student_id is an integer
         $stmt->execute();
 
         $result = $stmt->get_result(); // Get the result set

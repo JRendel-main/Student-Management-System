@@ -57,10 +57,22 @@ if ($_SESSION['role'] != 'teacher') {
                         <div class="col-xl-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="header-title">Grades Lists</h4>
-                                    <p class="text-muted font-13 mb-4">
-                                        List of grades of the student.
-                                    </p>
+                                    <div class="row mb-3">
+                                        <h4 class="header-title">Grades Lists</h4>
+                                        <p class="text-muted font-13 mb-4">
+                                            List of grades of the student.
+                                        </p>
+                                        <select class="form-select" id="academic_id" name="academic_id">
+                                            <?php
+                                            $academic = new Academic($conn);
+                                            $schoolYear = $academic->getAllAcademicYear();
+
+                                            foreach ($schoolYear as $row) {
+                                                echo '<option value="' . $row['academic_year_id'] . '">' . $row['year'] . '</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
                                     <table id="student_lists" class="table dt-responsive table-bordered w-100">
                                         <thead>
                                             <tr>
@@ -112,6 +124,73 @@ if ($_SESSION['role'] != 'teacher') {
     <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
     <script>
     $(document).ready(() => {
+        // event listener for academic year
+        $('#academic_id').on('change', function() {
+            let academic_id = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "controllers/getStudentGrades.php",
+                data: {
+                    student_id: <?php echo $_GET['student_id']; ?>,
+                    academic_id: academic_id
+                },
+                success: function(response) {
+                    response = JSON.parse(response);
+                    $('#student_lists').DataTable().clear().destroy();
+                    $('#student_lists').DataTable({
+                        data: response,
+                        columns: [{
+                                data: 'subject_name'
+                            },
+                            {
+                                data: function(row) {
+                                    return row.grades[0] ? row.grades[0]
+                                        .final_grade :
+                                        '';
+                                }
+                            },
+                            {
+                                data: function(row) {
+                                    return row.grades[1] ? row.grades[1]
+                                        .final_grade :
+                                        '';
+                                }
+                            },
+                            {
+                                data: function(row) {
+                                    return row.grades[2] ? row.grades[2]
+                                        .final_grade :
+                                        '';
+                                }
+                            },
+                            {
+                                data: function(row) {
+                                    return row.grades[3] ? row.grades[3]
+                                        .final_grade :
+                                        '';
+                                }
+                            },
+                            {
+                                data: 'final_grade'
+                            },
+                            {
+                                data: 'remarks',
+                                render: function(data) {
+                                    return data == 'Passed' ?
+                                        '<span class="badge bg-success">Passed</span>' :
+                                        '<span class="badge bg-danger">Failed</span>';
+                                }
+                            }
+                        ],
+                        "order": [
+                            [0, "asc"]
+                        ]
+                    });
+                }
+            });
+        });
+
+
         $.ajax({
             type: "POST",
             url: "controllers/getStudentGrades.php",

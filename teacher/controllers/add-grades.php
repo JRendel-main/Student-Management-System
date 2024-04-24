@@ -12,9 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $initial_grade = $_POST['initial_grade'];
     $student_id = $_POST['student_id'];
     $subject_id = $_POST['subject_id'];
+    $academic_year = $_POST['academic_year'];
 
     $grade = new Grades($conn);
-    $grade->addGrade($semester_id, $component_id, $highest_grade, $initial_grade, $student_id, $subject_id);
+    $grade->addGrade($semester_id, $component_id, $highest_grade, $initial_grade, $student_id, $subject_id, $academic_year);
 
     if ($grade) {
         echo json_encode(['status' => 'success', 'message' => 'Grade added successfully']);

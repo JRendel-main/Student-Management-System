@@ -103,7 +103,7 @@ if ($_SESSION['role'] != 'teacher') {
                                     <div class="col-md-8">
                                         <?php
                                         $grade = new Grades($conn);
-                                        $grades = $grade->getGradesForStudentAndSubject($student_id, $subject_id, $_GET['quarter_id']);
+                                        $grades = $grade->getGradesForStudentAndSubject($student_id, $subject_id, $_GET['quarter_id'], $_GET['academic_id']);
 
                                         $totalHG = 0;
                                         $totalIG = 0;
@@ -226,7 +226,7 @@ if ($_SESSION['role'] != 'teacher') {
                                                     <td><?php echo $gradeNumber; ?></td>
                                                     <?php
                                                     $grade = new Grades($conn);
-                                                    $grade->submitFinalGrade($student_id, $subject_id, $_GET['quarter_id'], $roundedGrades);
+                                                    $grade->submitFinalGrade($student_id, $subject_id, $_GET['quarter_id'], $_GET['academic_id'], $roundedGrades);
                                                     ?>
                                                 </tr>
                                             </tbody>
@@ -329,102 +329,102 @@ if ($_SESSION['role'] != 'teacher') {
     <script src="../assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
     <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
     <script>
-    $(document).ready(function() {
-        $('.initial-grade').click(function() {
-            var gradeId = $(this).data('grade-id');
+        $(document).ready(function () {
+            $('.initial-grade').click(function () {
+                var gradeId = $(this).data('grade-id');
 
-            // Open a SweetAlert prompt for confirmation
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // User confirmed deletion, send AJAX request to delete the grade
-                    $.ajax({
-                        type: 'POST',
-                        url: 'controllers/delete-grade.php',
-                        data: {
-                            grade_id: gradeId
-                        },
-                        success: function(response) {
-                            var data = JSON.parse(response);
-                            if (data.status === 'success') {
-                                // Grade deleted successfully, show success message
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Deleted!',
-                                    text: 'The grade has been deleted.',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                }).then(() => {
-                                    // Reload the page
-                                    location.reload();
-                                });
-                            } else {
-                                // Error deleting grade, show error message
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Oops...',
-                                    text: 'Something went wrong! Please try again.'
-                                });
-                            }
-                        }
-                    });
-                }
-            });
-        });
-        $('#addGradesForm').submit(function(e) {
-            e.preventDefault();
-
-            // add validation, the grades cannot be greater than the highest grade
-            var highestGrade = $('#highestGrade').val();
-            var grade = $('#grade').val();
-
-            if (parseInt(grade) > parseInt(highestGrade)) {
-                // use bootstrap validation form
-                $('#highestGrade').addClass('is-invalid');
-                $('#grade').addClass('is-invalid');
-
+                // Open a SweetAlert prompt for confirmation
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Grade cannot be greater than the highest grade'
-                });
-                return;
-            }
-
-            $.ajax({
-                type: 'POST',
-                url: 'controllers/add-grades.php',
-                data: $(this).serialize(),
-                success: function(response) {
-                    var response = JSON.parse(response);
-                    if (response.status == 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: 'Grade added successfully'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                location.reload();
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // User confirmed deletion, send AJAX request to delete the grade
+                        $.ajax({
+                            type: 'POST',
+                            url: 'controllers/delete-grade.php',
+                            data: {
+                                grade_id: gradeId
+                            },
+                            success: function (response) {
+                                var data = JSON.parse(response);
+                                if (data.status === 'success') {
+                                    // Grade deleted successfully, show success message
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Deleted!',
+                                        text: 'The grade has been deleted.',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    }).then(() => {
+                                        // Reload the page
+                                        location.reload();
+                                    });
+                                } else {
+                                    // Error deleting grade, show error message
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: 'Something went wrong! Please try again.'
+                                    });
+                                }
                             }
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'An error occurred. Please try again'
                         });
                     }
+                });
+            });
+            $('#addGradesForm').submit(function (e) {
+                e.preventDefault();
+
+                // add validation, the grades cannot be greater than the highest grade
+                var highestGrade = $('#highestGrade').val();
+                var grade = $('#grade').val();
+
+                if (parseInt(grade) > parseInt(highestGrade)) {
+                    // use bootstrap validation form
+                    $('#highestGrade').addClass('is-invalid');
+                    $('#grade').addClass('is-invalid');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Grade cannot be greater than the highest grade'
+                    });
+                    return;
                 }
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'controllers/add-grades.php',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        var response = JSON.parse(response);
+                        if (response.status == 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Grade added successfully'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An error occurred. Please try again'
+                            });
+                        }
+                    }
+                });
             });
         });
-    });
     </script>
 </body>
 
