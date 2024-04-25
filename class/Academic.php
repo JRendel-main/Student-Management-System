@@ -194,4 +194,16 @@ class Academic
 
         return $result;
     }
+
+    public function getAcademicYear($academic_id)
+    {
+        $query = "SELECT * FROM academic_year WHERE academic_year_id = $academic_id LIMIT 1";
+        $result = $this->conn->query($query);
+
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();
+        }
+
+        return [];
+    }
 }

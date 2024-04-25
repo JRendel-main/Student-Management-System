@@ -70,32 +70,29 @@ if ($_SESSION['role'] != 'teacher') {
                         <div class="card">
                             <div class="card-header text-center">
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
+                                    <div class="col-md-6">
+                                        <div class="mb-3 text-left">
                                             <?php
                                             $academic = new Academic($conn);
                                             $semester = $academic->getSemester();
 
                                             $semesterId = $_GET['quarter_id'];
                                             $semesterName = $academic->getSemesterId($semesterId);
+                                            $academic_year = $academic->getAcademicYear($_GET['academic_id']);
 
-                                            echo '<h5>' . $semesterName['Quarter'] . ' Quarter</h5>';
+                                            echo '<h2 class="text-dark">' . $academic_year['year'] . ' - ' . $semesterName['Quarter'] . ' Quarter</h2>';
                                             ?>
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-6">
                                         <!-- Add grades modal -->
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#addGradesModal">
+                                            <i class="bi bi-plus"></i>
                                             Add Grades
                                         </button>
                                     </div>
-                                    <div class="col-md-6 align-items-right">
-                                        <button class="btn btn-sm btn-success">
-                                            <i class="bi bi-arrow-repeat"></i>
-                                            Refresh
-                                        </button>
-                                    </div>
+
                                 </div>
                             </div>
                             <div class="card-body">
@@ -115,7 +112,7 @@ if ($_SESSION['role'] != 'teacher') {
                                         foreach ($gradeComponent as $gc) {
                                             echo '<h5>' . $gc['component_name'] . ' - ' . $gc['weight'] . '%</h5>';
                                             echo '<table class="table table-bordered" id="gradesTable">';
-                                            echo '<thead>';
+                                            echo '<thead class="table-success">';
                                             echo '<tr>';
                                             // count every grades in the grade component
                                             $count = 1;
@@ -204,7 +201,9 @@ if ($_SESSION['role'] != 'teacher') {
                                     <div class="col-md-4">
                                         <h5>Final Grade</h5>
                                         <table class="table table-stripped text-center">
-                                            <thead>
+                                            <thead class="
+                                                table-dark
+                                            ">
                                                 <tr>
                                                     <th>Initial Grade</th>
                                                     <th>Quarterly Grade</th>
