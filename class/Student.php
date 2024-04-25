@@ -135,4 +135,25 @@ class Student
             return false;
         }
     }
+
+    public function getStudentEmail($teacher_id)
+    {
+        $query = "SELECT s.email, s.student_id FROM student s JOIN section se ON s.section_id = se.section_id JOIN teacher t ON se.advisor_id = t.teacher_id WHERE t.teacher_id = ?";
+        $stmt = $this->conn->prepare($query);
+
+        if ($stmt) {
+            $stmt->bind_param("i", $teacher_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data = [];
+
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+
+            return $data;
+        } else {
+            return false;
+        }
+    }
 }

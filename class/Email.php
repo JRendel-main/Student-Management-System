@@ -4,7 +4,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // go to root project folder 
-require $_SERVER['DOCUMENT_ROOT'] . '/booking/vendor/autoload.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/student-management-system/vendor/autoload.php';
 
 class Email
 {
@@ -143,5 +143,13 @@ class Email
         $message = 'Your account has been created. Here are your credentials:<br><br>Username: ' . $username . '<br>Password: ' . $password . '<br><br>Use this credentials to login to the system.';
 
         return $this->sendEmail($to, $subject, 'teacher', $message);
+    }
+
+    public function sendStudentGrade($to, $link)
+    {
+        $subject = 'SHS - NEHS Student Grade';
+        $message = 'Your grade has been added. Click the link below to view your grade:<br><br><a href="' . $link . '">View Grade</a>';
+
+        return $this->sendEmail($to, $subject, 'student', $message);
     }
 }

@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+
 <?php include 'layouts/session.php'; ?>
 <?php include 'layouts/main.php'; ?>
 <?php
@@ -43,13 +46,9 @@ if ($_SESSION['role'] != 'teacher') {
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            <div class="page-title-box">
-                                <div class="page-title-right">
-                                    <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item active">Dashboard</li>
-                                    </ol>
-                                </div>
+                            <div class="page-title-box d-flex justify-content-between align-items-center">
                                 <h4 class="page-title">Student Lists</h4>
+                                <button class="btn btn-info btn-sm" id="sendQR">Send QR Grades to all Students</button>
                             </div>
                         </div>
                     </div>
@@ -58,9 +57,6 @@ if ($_SESSION['role'] != 'teacher') {
                             <div class="card">
                                 <div class="card-body">
                                     <h4 class="header-title">Student Lists</h4>
-                                    <p class="text-muted font-13 mb-4">
-                                        List of all students in the school.
-                                    </p>
                                     <table id="student_lists" class="table dt-responsive nowrap w-100">
                                         <thead>
                                             <tr>
@@ -78,8 +74,6 @@ if ($_SESSION['role'] != 'teacher') {
             </div>
         </div> <!-- container -->
     </div> <!-- content -->
-    </div>
-
     <!-- ============================================================== -->
     <!-- End Page content -->
     <!-- ============================================================== -->
@@ -89,23 +83,24 @@ if ($_SESSION['role'] != 'teacher') {
 
     <?php include 'layouts/footer-scripts.php'; ?>
 
-    <!-- App js -->
+    <!--   App js -->
     <script src="../assets/js/app.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.11/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="../assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
-    <script src="../assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../assets/ve ndor/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
     <script src="../assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
     <script src="../assets/vendor/datatables.net-fixedcolumns-bs5/js/fixedColumns.bootstrap5.min.js"></script>
-    <script src="../assets/vendor/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="../assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../    assets/vendor/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="../  assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
     <script src="../assets/vendor/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
     <script src="../assets/vendor/datatables.net-buttons/js/buttons.html5.min.js"></script>
     <script src="../assets/vendor/datatables.net-buttons/js/buttons.flash.min.js"></script>
     <script src="../assets/vendor/datatables.net-buttons/js/buttons.print.min.js"></script>
     <script src="../assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
     <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
+    <script src="../assets/vendor/qrcode/qrcode.js"></script>
     <script>
     $(document).ready(() => {
         $.ajax({
@@ -139,6 +134,84 @@ if ($_SESSION['role'] != 'teacher') {
             }
         });
     })
+
+    $('#sendQR').click(() => {
+        // Add confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to send QR grades to all students. This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, send it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                // Disable the button and show loading animation
+                $('#sendQR').html(
+                    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...'
+                ).prop('disabled', true);
+
+                // Send request to send QR grades
+                try {
+                    const response = await $.ajax({
+                        type: "POST",
+                        url: "controllers/getStudentEmail.php",
+                        data: {
+                            teacher_id: <?php echo $teacher_id; ?>
+                        }
+                    });
+
+                    const studentEmails = JSON.parse(response);
+
+                    for (const student of studentEmails) {
+                        const student_id = student.student_id;
+                        const email = student.email;
+
+                        await new Promise((resolve, reject) => {
+                            $.ajax({
+                                type: "POST",
+                                url: "controllers/sendEmail.php",
+                                data: {
+                                    student_id: student_id,
+                                    email: email
+                                },
+                                success: function(response) {
+                                    const responseData = JSON.parse(response);
+
+                                    if (responseData.status == 'success') {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Success',
+                                            text: responseData.message
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: responseData.message
+                                        });
+                                    }
+                                    resolve
+                                (); // Resolve the promise after each AJAX request completes
+                                },
+                                error: function(xhr, status, error) {
+                                    reject(
+                                    error); // Reject the promise if there's an error
+                                }
+                            });
+                        });
+                    }
+
+                    // Re-enable the button and revert its text
+                    $('#sendQR').html('Send QR Grades to all Students').prop('disabled', false);
+                } catch (error) {
+                    console.error(error);
+                    // Handle error here
+                }
+            }
+        })
+    });
     </script>
 </body>
 
