@@ -81,19 +81,35 @@ $conn = $db->connect();
                                             ?>
                                         </select>
                                     </div>
-                                    <table id="student_lists" class="table dt-responsive table-bordered w-100">
-                                        <thead>
-                                            <tr>
-                                                <th>Subject Name</th>
-                                                <th>First Quarter</th>
-                                                <th>Second Quarter</th>
-                                                <th>Third Quarter</th>
-                                                <th>Fourth Quarter</th>
-                                                <th>Final Grade</th>
-                                                <th>Remarks</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
+                                    <div class="row">
+                                        <div class="col-xl-8">
+                                            <table id="student_lists" class="table dt-responsive table-bordered w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Subject Name</th>
+                                                        <th>First Quarter</th>
+                                                        <th>Second Quarter</th>
+                                                        <th>Third Quarter</th>
+                                                        <th>Fourth Quarter</th>
+                                                        <th>Final Grade</th>
+                                                        <th>Remarks</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                        <div class="col-xl-4">
+                                            <table class="table table-bordered" id="attendance">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Month</th>
+                                                        <th>School Days</th>
+                                                        <th>Present Days</th>
+                                                    </tr>
+                                                </thead>
+
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -131,48 +147,89 @@ $conn = $db->connect();
     <script src="assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
     <script src="assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
     <script>
-        $(document).ready(() => {
-            // event listener for academic year
-            $('#academic_id').on('change', function () {
-                let academic_id = $(this).val();
-                $.ajax({
-                    type: "POST",
-                    url: "teacher/controllers/getStudentGrades.php",
-                    data: {
-                        student_id: <?php echo $_GET['student_id']; ?>,
-                        academic_id: academic_id
-                    },
-                    success: function (response) {
-                        response = JSON.parse(response);
-                        $('#student_lists').DataTable().clear().destroy();
-                        $('#student_lists').DataTable({
-                            data: response,
-                            columns: [{
+    $(document).ready(() => {
+        // event listener for academic year
+        $('#academic_id').on('change', function() {
+
+            $.ajax({
+                type: "POST",
+                url: "teacher/controllers/getStudentAttendance.php",
+                data: {
+                    student_id: <?php echo $_GET['student_id']; ?>,
+                    academic_id: $('#academic_id').val()
+                },
+                success: function(response) {
+                    response = JSON.parse(response);
+                    $('#attendance').DataTable().clear().destroy();
+                    $('#attendance').DataTable({
+                        data: response,
+                        columns: [{
+                                data: 'month',
+                            },
+                            {
+                                data: 'school_days',
+                            },
+                            {
+                                data: 'present_days',
+                            }
+                        ],
+                        // remove the show entries, search, info, pagination and make the table smaller
+                        "lengthMenu": [
+                            [5, 10, 25, 50, -1],
+                            [5, 10, 25, 50, "All"]
+                        ],
+                        "paging": false,
+                        "searching": false,
+                        "info": false,
+                        "autoWidth": true,
+                        "responsive": true,
+                        "scrollX": true,
+                        "scrollY": '50vh',
+                        "scrollCollapse": true,
+                        "pagingType": 'simple',
+                        "fixedHeader": true,
+                    });
+                }
+            });
+            let academic_id = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "teacher/controllers/getStudentGrades.php",
+                data: {
+                    student_id: <?php echo $_GET['student_id']; ?>,
+                    academic_id: academic_id
+                },
+                success: function(response) {
+                    response = JSON.parse(response);
+                    $('#student_lists').DataTable().clear().destroy();
+                    $('#student_lists').DataTable({
+                        data: response,
+                        columns: [{
                                 data: 'subject_name'
                             },
                             {
-                                data: function (row) {
+                                data: function(row) {
                                     return row.grades[0] ? row.grades[0]
                                         .final_grade :
                                         '';
                                 }
                             },
                             {
-                                data: function (row) {
+                                data: function(row) {
                                     return row.grades[1] ? row.grades[1]
                                         .final_grade :
                                         '';
                                 }
                             },
                             {
-                                data: function (row) {
+                                data: function(row) {
                                     return row.grades[2] ? row.grades[2]
                                         .final_grade :
                                         '';
                                 }
                             },
                             {
-                                data: function (row) {
+                                data: function(row) {
                                     return row.grades[3] ? row.grades[3]
                                         .final_grade :
                                         '';
@@ -183,55 +240,70 @@ $conn = $db->connect();
                             },
                             {
                                 data: 'remarks',
-                                render: function (data) {
+                                render: function(data) {
                                     return data == 'Passed' ?
                                         '<span class="badge bg-success">Passed</span>' :
                                         '<span class="badge bg-danger">Failed</span>';
                                 }
                             }
-                            ],
-                            "order": [
-                                [0, "asc"]
-                            ]
-                        });
-                    }
-                });
+                        ],
+                        "order": [
+                            [0, "asc"]
+                        ],
+                        // remove the show entries, search, info, pagination and make the table smaller
+                        "lengthMenu": [
+                            [5, 10, 25, 50, -1],
+                            [5, 10, 25, 50, "All"]
+                        ],
+                        "paging": false,
+                        "searching": false,
+                        "info": false,
+                        "autoWidth": true,
+                        "responsive": true,
+                        "scrollX": true,
+                        "scrollY": '50vh',
+                        "scrollCollapse": true,
+                        "pagingType": 'simple',
+                        "fixedHeader": true,
+                    });
+                }
             });
+        });
 
 
-            $.ajax({
-                type: "POST",
-                url: "teacher/controllers/getStudentGrades.php",
-                data: {
-                    student_id: <?php echo $_GET['student_id']; ?>
-                },
-                success: function (response) {
-                    response = JSON.parse(response);
-                    $('#student_lists').DataTable({
-                        data: response,
-                        columns: [{
+        $.ajax({
+            type: "POST",
+            url: "teacher/controllers/getStudentGrades.php",
+            data: {
+                student_id: <?php echo $_GET['student_id']; ?>
+            },
+            success: function(response) {
+                response = JSON.parse(response);
+                $('#student_lists').DataTable({
+                    data: response,
+                    columns: [{
                             data: 'subject_name'
                         },
                         {
-                            data: function (row) {
+                            data: function(row) {
                                 return row.grades[0] ? row.grades[0].final_grade :
                                     '';
                             }
                         },
                         {
-                            data: function (row) {
+                            data: function(row) {
                                 return row.grades[1] ? row.grades[1].final_grade :
                                     '';
                             }
                         },
                         {
-                            data: function (row) {
+                            data: function(row) {
                                 return row.grades[2] ? row.grades[2].final_grade :
                                     '';
                             }
                         },
                         {
-                            data: function (row) {
+                            data: function(row) {
                                 return row.grades[3] ? row.grades[3].final_grade :
                                     '';
                             }
@@ -241,20 +313,22 @@ $conn = $db->connect();
                         },
                         {
                             data: 'remarks',
-                            render: function (data) {
+                            render: function(data) {
                                 return data == 'Passed' ?
                                     '<span class="badge bg-success">Passed</span>' :
                                     '<span class="badge bg-danger">Failed</span>';
                             }
                         }
-                        ],
-                        "order": [
-                            [0, "asc"]
-                        ]
-                    });
-                }
-            });
-        })
+                    ],
+                    "order": [
+                        [0, "asc"]
+                    ]
+                });
+            }
+        });
+
+
+    })
     </script>
 
 </body>
