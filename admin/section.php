@@ -144,6 +144,43 @@ if ($_SESSION['role'] != 'admin') {
     </div>
     <!-- END wrapper -->
 
+    <!-- Change advisor modal -->
+    <div class="modal fade" id="changeAdvisorModal" tabindex="-1" aria-labelledby="changeAdvisorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="changeAdvisorForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changeAdvisorModalLabel">Change Advisor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="sectionId" name="sectionId">
+                        <div class="mb-3">
+                            <label for="advisorId" class="col-form-label">Advisor:</label>
+                            <select class="form-select" id="advisorId" name="advisorId" required>
+                                <option value="">Select Advisor</option>
+                                <?php
+                                $teacher = new Teacher($conn);
+                                $teachers = $teacher->getAllTeachers();
+                                foreach ($teachers as $teacher) {
+                                    echo '<option value="' . $teacher['teacher_id'] . '">' . $teacher['first_name'] . ' ' . $teacher['last_name'] . ' - ' . $teacher['title'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary waves-effect"
+                            data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <?php include 'layouts/right-sidebar.php'; ?>
 
     <?php include 'layouts/footer-scripts.php'; ?>

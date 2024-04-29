@@ -5,10 +5,26 @@ include 'controllers/autoloader.php';
 
 $db = new Database();
 $conn = $db->connect();
+
+$st_id = $_GET['student_id'];
+
+$student = new Student($conn);
+$studentInfo = $student->getStudent($st_id);
+
+$studentName = $studentInfo['last_name'] . ', ' . $studentInfo['first_name'];
+
+$section_id = $studentInfo['section_id'];
+
+$section = new Section($conn);
+$sectionInfo = $section->getSection($section_id);
+
+$sectionName = $sectionInfo['section_name'];
 ?>
 
 <head>
-    <title>Teacher Dashboard | Admin Portal</title>
+    <title>
+        <?php echo $studentName; ?> | <?php echo $sectionName; ?>
+    </title>
     <?php include 'layouts/title-meta.php'; ?>
 
     <?php include 'layouts/head-css.php'; ?>
@@ -24,13 +40,44 @@ $conn = $db->connect();
         type="text/css" />
     <link href="assets/vendor/datatables.net-select-bs5/css/select.bootstrap5.min.css" rel="stylesheet"
         type="text/css" />
+    <style>
+    /* Styles for printable version */
+    @media print {
+
+        /* Hide unnecessary elements */
+        .content-page,
+        .page-title-right,
+        .breadcrumb {
+            display: none;
+        }
+
+        /* Adjust table styles for printing */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            /* Add borders */
+            padding: 8px;
+            /* Adjust padding */
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            /* Add background color for header */
+        }
+    }
+    </style>
 </head>
 
 <body>
     <!-- Begin page -->
     <div class="wrapper">
-        <?php include 'layouts/menu.php'; ?>
-        <div class="content-page">
+        <div class="">
             <div class="content">
 
                 <!-- Start Content-->
@@ -52,34 +99,36 @@ $conn = $db->connect();
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row mb-3">
-                                        <?php
-                                        $student = new Student($conn);
-                                        $studentInfo = $student->getStudent($_GET['student_id']);
-
-                                        $studentName = $studentInfo['last_name'] . ', ' . $studentInfo['first_name'];
-                                        $section_id = $studentInfo['section_id'];
-
-                                        echo '<h4 class="header-title">' . $studentName . '</h4>';
-
-                                        $section = new Section($conn);
-                                        $sectionInfo = $section->getSection($section_id);
-
-                                        echo '<p class="text-muted font-13 mb-2">' . $sectionInfo['section_name'] . '</p>';
-                                        ?>
-                                        <!-- <h4 class="header-title">Grades Lists</h4>
-                                        <p class="text-muted font-13 mb-4">
-                                            List of grades of the student.
-                                        </p> -->
-                                        <select class="form-select" id="academic_id" name="academic_id">
+                                        <div class="col-md-6">
                                             <?php
-                                            $academic = new Academic($conn);
-                                            $schoolYear = $academic->getAllAcademicYear();
+                                            $student = new Student($conn);
+                                            $studentInfo = $student->getStudent($_GET['student_id']);
 
-                                            foreach ($schoolYear as $row) {
-                                                echo '<option value="' . $row['academic_year_id'] . '">' . $row['year'] . '</option>';
-                                            }
+                                            $studentName = $studentInfo['last_name'] . ', ' . $studentInfo['first_name'];
+                                            $section_id = $studentInfo['section_id'];
+
+                                            echo '<h4 class="header-title">' . $studentName . '</h4>';
+
+                                            $section = new Section($conn);
+                                            $sectionInfo = $section->getSection($section_id);
+
+                                            echo '<p class="text-muted font-13 mb-2">' . $sectionInfo['section_name'] . '</p>';
                                             ?>
-                                        </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex justify-content-end">
+                                                <select class="form-select me-2" id="academic_id" name="academic_id">
+                                                    <?php
+                                                    $academic = new Academic($conn);
+                                                    $schoolYear = $academic->getAllAcademicYear();
+
+                                                    foreach ($schoolYear as $row) {
+                                                        echo '<option value="' . $row['academic_year_id'] . '">' . $row['year'] . '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-xl-8">
@@ -106,7 +155,6 @@ $conn = $db->connect();
                                                         <th>Present Days</th>
                                                     </tr>
                                                 </thead>
-
                                             </table>
                                         </div>
                                     </div>
@@ -118,7 +166,29 @@ $conn = $db->connect();
             </div>
         </div> <!-- container -->
     </div> <!-- content -->
+    <div id="printTable" class="d-none">
+        <table id="printTableContent" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th rowspan="2">Subject Name</th>
+                    <th colspan="2">First Semester</th>
+                    <th colspan="2">Second Semester</th>
+                    <th rowspan="2">Final Grade</th>
+                </tr>
+                <tr>
+                    <th>1st Quarter</th>
+                    <th>2nd Quarter</th>
+                    <th>3rd Quarter</th>
+                    <th>4th Quarter</th>
+                </tr>
+            </thead>
+            <tbody id="printTableBody">
+                <!-- Table body will be populated dynamically -->
+            </tbody>
+        </table>
     </div>
+
+
 
     <!-- ============================================================== -->
     <!-- End Page content -->
@@ -265,6 +335,14 @@ $conn = $db->connect();
                         "scrollCollapse": true,
                         "pagingType": 'simple',
                         "fixedHeader": true,
+                        // add print button
+                        dom: 'Bfrtip',
+                        buttons: [{
+                            extend: 'print',
+                            text: 'Print',
+                            className: 'btn btn-info',
+
+                        }]
                     });
                 }
             });

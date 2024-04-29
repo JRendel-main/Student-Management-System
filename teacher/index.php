@@ -79,52 +79,82 @@ if ($_SESSION['role'] != 'teacher') {
                             </div>
                         </div>
                         <div class="col-xl-8">
+                            <!-- Display all teachers advisor section on card-->
                             <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Class Schedule</h4>
-                                </div>
                                 <div class="card-body">
-                                    <div id='calendar'></div>
+                                    <h4 class="header-title">Advisory Class</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-centered table-nowrap mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Section</th>
+                                                    <th>Strand</th>
+                                                    <th>Subject</th>
+                                                    <th>Teacher</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $teacher = new Academic($conn);
+                                                $teacherId = $teacher->getTeacherId($userId);
+                                                $academic = new Academic($conn);
+                                                $section = $academic->getSection($teacherId);
+                                                $result = $academic->getSubjectSection($teacherId);
+                                                if ($result->num_rows > 0) {
+                                                    while ($row = $result->fetch_assoc()) {
+                                                        echo "<tr>";
+                                                        echo "<td>" . $row['section_name'] . "</td>";
+                                                        echo "<td>" . $row['strand_name'] . "</td>";
+                                                        echo "<td>" . $row['subject_name'] . "</td>";
+                                                        echo "<td>" . $row['teacher_name'] . "</td>";
+                                                        echo "</tr>";
+                                                    }
+                                                } else {
+                                                    echo "<tr><td colspan='4'>No advisory class yet.</td></tr>";
+                                                }
+                                                ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div> <!-- container -->
+                    </div> <!-- container -->
 
-            </div> <!-- content -->
+                </div> <!-- content -->
 
-            <?php include 'layouts/footer.php'; ?>
+                <?php include 'layouts/footer.php'; ?>
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
 
         </div>
+        <!-- END wrapper -->
 
-        <!-- ============================================================== -->
-        <!-- End Page content -->
-        <!-- ============================================================== -->
+        <?php include 'layouts/right-sidebar.php'; ?>
 
-    </div>
-    <!-- END wrapper -->
+        <?php include 'layouts/footer-scripts.php'; ?>
 
-    <?php include 'layouts/right-sidebar.php'; ?>
-
-    <?php include 'layouts/footer-scripts.php'; ?>
-
-    <!-- App js -->
-    <script src="../assets/js/app.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../assets/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="../assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
-    <script src="../assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="../assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
-    <script src="../assets/vendor/datatables.net-fixedcolumns-bs5/js/fixedColumns.bootstrap5.min.js"></script>
-    <script src="../assets/vendor/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="../assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../assets/vendor/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
-    <script src="../assets/vendor/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="../assets/vendor/datatables.net-buttons/js/buttons.flash.min.js"></script>
-    <script src="../assets/vendor/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="../assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-    <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
-    <script src="scripts/index.js"></script>
+        <!-- App js -->
+        <script src="../assets/js/app.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="../assets/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
+        <script src="../assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+        <script src="../assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+        <script src="../assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+        <script src="../assets/vendor/datatables.net-fixedcolumns-bs5/js/fixedColumns.bootstrap5.min.js"></script>
+        <script src="../assets/vendor/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+        <script src="../assets/vendor/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+        <script src="../assets/vendor/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+        <script src="../assets/vendor/datatables.net-buttons/js/buttons.html5.min.js"></script>
+        <script src="../assets/vendor/datatables.net-buttons/js/buttons.flash.min.js"></script>
+        <script src="../assets/vendor/datatables.net-buttons/js/buttons.print.min.js"></script>
+        <script src="../assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+        <script src="../assets/vendor/datatables.net-select/js/dataTables.select.min.js"></script>
+        <script src="scripts/index.js"></script>
 
 </body>
 

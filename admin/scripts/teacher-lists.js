@@ -59,10 +59,6 @@ $(document).ready(function () {
                 }
             }
         ],
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
     });
 
     // Event handler for delete button

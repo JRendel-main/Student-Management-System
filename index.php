@@ -67,7 +67,7 @@ if (isset($_GET['error'])) {
 
                 <!-- Footer-->
                 <footer class="footer footer-alt">
-                    <p class="text-muted">Don't have an account? <a href="auth-register-2.php"
+                    <p class="text-muted">Don't have an account? <a href="#" id="requestLink"
                             class="text-muted ms-1"><b>Request here</b></a></p>
                 </footer>
 
@@ -86,8 +86,67 @@ if (isset($_GET['error'])) {
         </div>
         <!-- end Auth fluid right content -->
     </div>
+
+    <div id="requestModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title">Request Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form action="controllers/requestAccount.php" method="post">
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="firstname" class="form-label">First Name</label>
+                                    <input class="form-control" type="textbox" id="firstname" required=""
+                                        name='firstname' placeholder="Enter your first name">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="middlename" class="form-label">Middle Name</label>
+                                    <input class="form-control" type="textbox" id="middlename" required=""
+                                        name='middlename' placeholder="Enter your middle name">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="lastname" class="form-label">Last Name</label>
+                                    <input class="form-control" type="textbox" id="lastname" required="" name='lastname'
+                                        placeholder="Enter your last name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="emailaddress" class="form-label">Email Address</label>
+                            <input class="form-control" type="textbox" id="emailaddress" required="" name='email'
+                                placeholder="Enter your email">
+                            <small class="text-muted">Note: Your email will be used as your username</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gender" class="form-group">Gender</label>
+                            <select class="form-control" id="gender" name="gender">
+                                <option class </select>
+                        </div>
+                        <div class="d-grid mb-0 text-center">
+                            <button class="btn btn-success" type="submit"><i class="ri-login-box-line"></i> Request
+                                Account</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- end auth-fluid-->
     <?php include 'layouts/footer-scripts.php'; ?>
+    <script>
+        document.getElementById('requestLink').addEventListener('click', function () {
+            var myModal = new bootstrap.Modal(document.getElementById('requestModal'), {
+                keyboard: false
+            });
+            myModal.show();
+        });
+    </script>
 
     <!-- App js -->
     <script src="assets/js/app.min.js"></script>

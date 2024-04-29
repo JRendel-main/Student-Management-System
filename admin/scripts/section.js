@@ -31,8 +31,8 @@ $(document).ready(() => {
                         title: 'Action',
                         data: null,
                         render: function (data, type, row) {
-                            return '<button class="btn btn-danger btn-sm btn-delete" data-id="' + row.section_id + '">Delete</button>' +
-                                '<button class="btn btn-info btn-sm btn-edit" data-id="' + row.section_id + '">Edit</button>';
+                            return '<button class="btn btn-danger btn-sm btn-delete" data-id="' + row.section_id + '"><i class="bi bi-trash"></i></button> ' +
+                                '<button class="btn btn-info btn-sm btn-edit" data-id="' + row.section_id + '"><i class="bi bi-pencil"></i></button>';
                         }
                     }
                 ],
@@ -62,27 +62,58 @@ $(document).ready(() => {
         e.preventDefault();
         var rowId = $(this).data('id');
 
-        // Remove row from DataTable (optional)
-        var table = $('#section').DataTable();
-        var index = table.row($(this).parents('tr')).index();
-        table.row(index).remove().draw();
+        // add swal confirmation first
+        swal.fire({
+            title: 'Are you sure?',
+            text: 'You are about to delete this section.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Perform delete operation (AJAX call to server)
+                $.ajax({
+                    url: 'controllers/deleteSection.php',
+                    type: 'POST',
+                    data: { id: rowId },
+                    success: function (response) {
+                        var data = JSON.parse(response);
 
-        // Perform delete operation (AJAX call to server)
-        // Example AJAX call:
-        // $.post('controllers/deleteAcademicYear.php', { id: rowId })
-        //    .done(function(response) {
-        //        // Handle success
+                        if (data.status === "success") {
+                            swal.fire({
+                                title: 'Success!',
+                                text: data.message,
+                                icon: 'success'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            swal.fire({
+                                title: 'Failed!',
+                                text: data.message,
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        // Handle error
+                        console.error('Error:', error);
+                    }
+                });
+            }
+        });
+
+
     });
 
     $('#section').on('click', '.btn-edit', function (e) {
         e.preventDefault();
         var rowId = $(this).data('id');
 
-        // Perform edit operation (AJAX call to server)
-        // Example AJAX call:
-        // $.post('controllers/editAcademicYear.php', { id: rowId })
-        //    .done(function(response) {
-        //        // Handle success
+        // open changeAdvisorModal modal
+        $('#changeAdvisorModal').modal('show');
     });
 
     $('#addSectionForm').on('submit', function (e) {

@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-6">
                 <script>
-                document.write(new Date().getFullYear())
+                    document.write(new Date().getFullYear())
                 </script> Nueva Ecija High School - Senior High School
             </div>
             <div class="col-md-6">
@@ -11,6 +11,7 @@
                     <a href="javascript:void(0);">Contact Us</a>
                 </div>
             </div>
+
         </div>
     </div>
 </footer>

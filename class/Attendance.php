@@ -51,4 +51,19 @@ class Attendance
 
         return $stmt->affected_rows;
     }
+
+    // get data for bar chart in admin display the attendance of all students in every montj
+    public function getAttendanceByMonth()
+    {
+        $sql = "SELECT month, SUM(present_days) as present_days, SUM(school_days) as school_days FROM attendance GROUP BY month";
+        $result = $this->conn->query($sql);
+
+        $attendance = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $attendance[] = $row;
+        }
+
+        return $attendance;
+    }
 }

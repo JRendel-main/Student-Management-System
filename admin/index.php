@@ -53,7 +53,7 @@ if ($_SESSION['role'] != 'admin') {
                                         </div>
                                         <div class="col-6">
                                             <div class="text-end">
-                                                <h3 class="text-dark mt-1">0</h3>
+                                                <h3 class="text-dark mt-1" id="teacherCount">0</h3>
                                                 <p class="text-muted mb-1 text-truncate">Teachers</p>
                                             </div>
                                         </div>
@@ -72,7 +72,7 @@ if ($_SESSION['role'] != 'admin') {
                                         </div>
                                         <div class="col-6">
                                             <div class="text-end">
-                                                <h3 class="text-dark mt-1">0</h3>
+                                                <h3 class="text-dark mt-1" id="studentCount">0</h3>
                                                 <p class="text-muted mb-1 text-truncate">Students</p>
                                             </div>
                                         </div>
@@ -91,7 +91,7 @@ if ($_SESSION['role'] != 'admin') {
                                         </div>
                                         <div class="col-6">
                                             <div class="text-end">
-                                                <h3 class="text-dark mt-1">0</h3>
+                                                <h3 class="text-dark mt-1" id="sectionCount">0</h3>
                                                 <p class="text-muted mb-1 text-truncate">Sections</p>
                                             </div>
                                         </div>
@@ -110,7 +110,7 @@ if ($_SESSION['role'] != 'admin') {
                                         </div>
                                         <div class="col-6">
                                             <div class="text-end">
-                                                <h3 class="text-dark mt-1">0</h3>
+                                                <h3 class="text-dark mt-1" id="subjectCount">>0</h3>
                                                 <p class="text-muted mb-1 text-truncate">Subjects</p>
                                             </div>
                                         </div>
@@ -119,28 +119,158 @@ if ($_SESSION['role'] != 'admin') {
                             </div>
                         </div>
                     </div>
-                </div> <!-- container -->
+                    <div class="row">
+                        <!-- Add recent student -->
+                        <div class="col-xl-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title mb-4">Recent Students</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-centered table-nowrap table-hover mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Student ID</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Grade</th>
+                                                    <th scope="col">Section</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $academic = new Academic($conn);
+                                                $students = $academic->getRecentStudents();
 
-            </div> <!-- content -->
+                                                foreach ($students as $student) {
+                                                    echo "<tr>";
+                                                    echo "<td>" . $student['student_id'] . "</td>";
+                                                    echo "<td>" . $student['first_name'] . " " . $student['last_name'] . "</td>";
+                                                    echo "<td>" . $student['grade'] . "</td>";
+                                                    echo "<td>" . $student['section_name'] . "</td>";
+                                                    echo "</tr>";
+                                                }
 
-            <?php include 'layouts/footer.php'; ?>
+                                                ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <!-- Display bar chart for attendance of all students -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title mb-4">Attendance</h4>
+                                    <div id="attendance-chart" class="apex-charts" dir="ltr"></div>
+                                </div>
+                            </div>
+                        </div> <!-- container -->
 
-        </div>
+                    </div> <!-- content -->
 
-        <!-- ============================================================== -->
-        <!-- End Page content -->
-        <!-- ============================================================== -->
+                    <?php include 'layouts/footer.php'; ?>
 
-    </div>
-    <!-- END wrapper -->
+                </div>
 
-    <?php include 'layouts/right-sidebar.php'; ?>
+                <!-- ============================================================== -->
+                <!-- End Page content -->
+                <!-- ============================================================== -->
 
-    <?php include 'layouts/footer-scripts.php'; ?>
+            </div>
+            <!-- END wrapper -->
 
-    <!-- App js -->
-    <script src="../assets/js/app.min.js"></script>
-    <script src="scripts/index.js"></script>
+            <?php include 'layouts/right-sidebar.php'; ?>
+
+            <?php include 'layouts/footer-scripts.php'; ?>
+            <!-- Apex chart cdn -->
+            <script src="../assets/vendor/apexcharts/apexcharts.min.js"></script>
+
+            <!-- App js -->
+            <script src="../assets/js/app.min.js"></script>
+            <script src="scripts/index.js"></script>
+            <script>
+                $(document).ready(function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "controllers/getDashboardCount.php",
+                        success: function (response) {
+                            var data = JSON.parse(response);
+                            $('#teacherCount').text(data.teacherCount);
+                            $('#studentCount').text(data.studentCount);
+                            $('#subjectCount').text(data.subjectCount);
+                            $('#sectionCount').text(data.sectionCount);
+                        }
+                    });
+
+                    $.ajax({
+                        type: "GET",
+                        url: "controllers/getAttendanceByMonth.php",
+                        success: function (response) {
+                            var data = JSON.parse(response);
+                            var months = [];
+                            var presentDays = [];
+                            var schoolDays = [];
+
+                            data.forEach(function (item) {
+                                months.push(item.month);
+                                presentDays.push(item.present_days);
+                                schoolDays.push(item.school_days);
+                            });
+
+                            var options = {
+                                series: [{
+                                    name: 'Present Days',
+                                    data: presentDays
+                                }, {
+                                    name: 'School Days',
+                                    data: schoolDays
+                                }],
+                                chart: {
+                                    height: 350,
+                                    type: 'bar',
+                                },
+                                plotOptions: {
+                                    bar: {
+                                        horizontal: false,
+                                        columnWidth: '55%',
+                                        endingShape: 'rounded'
+                                    },
+                                },
+                                dataLabels: {
+                                    enabled: false
+                                },
+                                stroke: {
+                                    show: true,
+                                    width: 2,
+                                    colors: ['transparent']
+                                },
+                                xaxis: {
+                                    categories: months,
+                                },
+                                yaxis: {
+                                    title: {
+                                        text: 'Days'
+                                    }
+                                },
+                                fill: {
+                                    opacity: 1
+                                },
+                                tooltip: {
+                                    y: {
+                                        formatter: function (val) {
+                                            return val + " days"
+                                        }
+                                    }
+                                }
+                            };
+
+                            var chart = new ApexCharts(document.querySelector("#attendance-chart"),
+                                options);
+                            chart.render();
+                        }
+                    });
+                });
+            </script>
 
 </body>
 

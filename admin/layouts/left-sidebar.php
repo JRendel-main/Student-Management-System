@@ -1,8 +1,9 @@
 <!-- ========== Left Sidebar Start ========== -->
 <div class="leftside-menu">
     <!-- Brand Logo Light -->
-    <a href="index.php" class="logo logo-light">
-        <img src="../assets/images/nehs.png" alt="light logo" height="80" />
+    <a href="index.php" class="logo logo-light" id="logo">
+        <img src="../assets/images/nehs.png" alt="light logo" height="100" />
+        <div class="logo-sm"></div>
     </a>
 
     <!-- Brand Logo Dark -->
@@ -11,7 +12,7 @@
             <img src="../assets/images/nehs.png" alt="dark logo" />
         </span>
         <span class="logo-sm">
-            <img src="../assets/images/nehs.png" alt="small logo" />
+            <p class="text-white">NEHS</p>
         </span>
     </a>
 

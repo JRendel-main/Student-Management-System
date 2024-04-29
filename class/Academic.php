@@ -206,4 +206,102 @@ class Academic
 
         return [];
     }
+
+    public function getStudentCount()
+    {
+        $query = "SELECT COUNT(*) as total_students FROM student";
+        $result = $this->conn->query($query);
+
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();
+        }
+
+        return [];
+    }
+
+    public function getTeacherCount()
+    {
+        $query = "SELECT COUNT(*) as total_teachers FROM teacher";
+        $result = $this->conn->query($query);
+
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();
+        }
+
+        return [];
+    }
+
+    public function getSubjectCount()
+    {
+        $query = "SELECT COUNT(*) as total_subjects FROM subject";
+        $result = $this->conn->query($query);
+
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();
+        }
+
+        return [];
+    }
+
+    public function getSectionCount()
+    {
+        $query = "SELECT COUNT(*) as total_sections FROM section";
+        $result = $this->conn->query($query);
+
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();
+        }
+
+        return [];
+    }
+
+    public function getRecentStudents()
+    {
+        // display also the section_name and grade
+        $query = "SELECT a.student_id, a.first_name, a.last_name, b.section_name, b.year as grade FROM student a, section b WHERE a.section_id = b.section_id ORDER BY a.student_id DESC LIMIT 5";
+        $result = $this->conn->query($query);
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
+
+    public function getSubjectSection($teacher_id)
+    {
+        $sql = "SELECT s.year, 
+            s.section_id,
+            s.section_name, 
+            st.strand_name,
+            su.subject_id,
+            su.subject_name,
+            CONCAT(t.first_name,' ',t.last_name) AS teacher_name
+            FROM section AS s
+            INNER JOIN strand AS st ON st.strand_id = s.strand_id
+            INNER JOIN subject AS su ON su.strand_id = s.strand_id
+            INNER JOIN teacher AS t ON t.teacher_id = su.subject_teacher 
+            WHERE t.teacher_id = ?";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if ($stmt) {
+            $stmt->bind_param("i", $teacher_id); // Assuming teacher_id is an integer
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            // Fetch all rows as an associative array
+            $data = [];
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+
+            return $data;
+        } else {
+            return false;
+        }
+    }
 }

@@ -89,4 +89,18 @@ class Section
         }
     }
 
+    public function deleteSection($section_id)
+    {
+        $sql = "DELETE FROM section WHERE section_id = ?";
+        $stmt = $this->conn->prepare($sql);
+
+        if ($stmt) {
+            $stmt->bind_param("i", $section_id); // Assuming section_id is an integer
+            $stmt->execute();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
